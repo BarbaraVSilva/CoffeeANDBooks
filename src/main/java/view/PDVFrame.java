@@ -83,6 +83,14 @@ public class PDVFrame extends JFrame {
             ex.printStackTrace();
         }
 
+        // Fallback default categories if empty (e.g. database offline or unpopulated)
+        if (categorias.isEmpty()) {
+            categorias.add("Bebidas Quentes");
+            categorias.add("Bebidas Frias");
+            categorias.add("Salgados");
+            categorias.add("Doces");
+        }
+
         // Add dynamic category tabs
         for (String cat : categorias) {
             String tabTitle = cat;
