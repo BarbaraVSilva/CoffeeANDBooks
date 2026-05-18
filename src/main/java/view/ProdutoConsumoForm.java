@@ -59,7 +59,7 @@ public class ProdutoConsumoForm extends JFrame {
         gbc.gridx = 1; formPanel.add(txtNome, gbc);
 
         gbc.gridy = 2; gbc.gridx = 0; formPanel.add(new JLabel("Categoria:"), gbc);
-        cbCategoria = new JComboBox<>(new String[]{"Bebidas Quentes", "Bebidas Fias", "Salgados", "Doces", "Outros"});
+        cbCategoria = new JComboBox<>(new String[]{"Bebidas Quentes", "Bebidas Frias", "Salgados", "Doces", "Outros"});
         cbCategoria.setFont(new Font("SansSerif", Font.PLAIN, 14));
         gbc.gridx = 1; formPanel.add(cbCategoria, gbc);
 

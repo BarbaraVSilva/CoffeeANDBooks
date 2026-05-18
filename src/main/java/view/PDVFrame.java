@@ -57,18 +57,70 @@ public class PDVFrame extends JFrame {
 
         // TabbedPane for Categories
         tabbedPane = new JTabbedPane();
+        tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         tabbedPane.setFont(UIConstants.FONT_LABEL);
-        tabbedPane.addTab("☕ Cafés", createCategoryPanel("Bebidas Quentes"));
-        tabbedPane.addTab("🍰 Doces", createCategoryPanel("Doces"));
-        tabbedPane.addTab("🥪 Salgados", createCategoryPanel("Salgados"));
-        tabbedPane.addTab("📚 Livros", createBooksPanel());
+
+        // Fetch dynamic categories from the database
+        List<String> categorias = new ArrayList<>();
+        try {
+            List<ProdutoConsumo> produtos = new dao.ProdutoConsumoDAO().listar();
+            for (ProdutoConsumo prod : produtos) {
+                String cat = prod.getCategoriaCardapio();
+                if (cat != null && !cat.trim().isEmpty()) {
+                    boolean exists = false;
+                    for (String c : categorias) {
+                        if (c.equalsIgnoreCase(cat)) {
+                            exists = true;
+                            break;
+                        }
+                    }
+                    if (!exists) {
+                        categorias.add(cat);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        // Add dynamic category tabs
+        for (String cat : categorias) {
+            String tabTitle = cat;
+            String lower = cat.toLowerCase();
+            if (lower.contains("quente")) {
+                tabTitle = "☕ " + cat;
+            } else if (lower.contains("fria") || lower.contains("fia")) {
+                tabTitle = "🥤 " + cat;
+            } else if (lower.contains("salgado")) {
+                tabTitle = "🥪 " + cat;
+            } else if (lower.contains("doce")) {
+                tabTitle = "🍰 " + cat;
+            } else {
+                tabTitle = "🍽️ " + cat;
+            }
+
+            JPanel catPanel = createCategoryPanel(cat);
+            JScrollPane scrollPane = new JScrollPane(catPanel);
+            scrollPane.setBorder(null);
+            scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+            tabbedPane.addTab(tabTitle, scrollPane);
+        }
+
+        // Add static Books tab
+        JPanel booksPanel = createBooksPanel();
+        JScrollPane booksScroll = new JScrollPane(booksPanel);
+        booksScroll.setBorder(null);
+        booksScroll.getVerticalScrollBar().setUnitIncrement(16);
+        tabbedPane.addTab("📚 Livros", booksScroll);
+
         cardPanel.add(tabbedPane, "CATEGORIES");
 
         // Search Results Panel
-        searchResultPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        searchResultPanel = new JPanel(new util.WrapLayout(FlowLayout.LEFT, 10, 10));
         searchResultPanel.setBackground(UIConstants.COLOR_PRIMARY());
         JScrollPane searchScroll = new JScrollPane(searchResultPanel);
         searchScroll.setBorder(null);
+        searchScroll.getVerticalScrollBar().setUnitIncrement(16);
         cardPanel.add(searchScroll, "SEARCH_RESULTS");
 
         leftPanel.add(cardPanel, BorderLayout.CENTER);
@@ -145,7 +197,7 @@ public class PDVFrame extends JFrame {
     }
 
     private JPanel createCategoryPanel(String categoria) {
-        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 12));
+        JPanel p = new JPanel(new util.WrapLayout(FlowLayout.LEFT, 12, 12));
         p.setBackground(UIConstants.COLOR_PRIMARY());
         
         List<ProdutoConsumo> produtos = new ProdutoConsumoDAO().listar();
@@ -159,7 +211,7 @@ public class PDVFrame extends JFrame {
     }
 
     private JPanel createBooksPanel() {
-        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 12));
+        JPanel p = new JPanel(new util.WrapLayout(FlowLayout.LEFT, 12, 12));
         p.setBackground(UIConstants.COLOR_PRIMARY());
         
         List<Livro> livros = new LivroDAO().listar(null, "Todos");

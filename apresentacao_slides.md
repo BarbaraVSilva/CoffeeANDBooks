@@ -39,8 +39,12 @@ style: |
 ---
 
 ## 👥 Integrantes do Projeto
-*   **Thamires Martins**
 *   **Barbara Silva**
+*   **Thamires Martins**
+*   **Jefferson Borges**
+*   **Richard Greghi**
+*   **Ricardo Pighin**
+*   **Matheus Araujo**
 
 ---
 

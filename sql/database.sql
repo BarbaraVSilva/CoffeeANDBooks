@@ -57,6 +57,7 @@ INSERT INTO GENERO_LIVRO (nome_genero, localizacao_estante) VALUES
 ('Ficção Científica', 'Estante A1 - Corredor Azul'),
 ('Suspense & Thriller', 'Estante B2 - Próximo ao Café'),
 ('Clássicos Literários', 'Estante C1 - Parede de Madeira'),
+('Romance', 'Estante D1 - Proximo as poltronas'),
 ('Filosofia', 'Mezanino - Área de Silêncio'),
 ('Gastronomia', 'Prateleira Suspensa - Balcão');
 
