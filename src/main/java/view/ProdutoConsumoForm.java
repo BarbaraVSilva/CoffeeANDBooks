@@ -7,35 +7,31 @@ import javax.swing.event.DocumentEvent;
 import java.awt.*;
 import java.io.File;
 import java.util.List;
-import model.GeneroLivro;
-import model.Livro;
-import exception.PrecoInvalidoSeboException;
-import dao.LivroDAO;
-import dao.GeneroDAO;
+import model.ProdutoConsumo;
+import dao.ProdutoConsumoDAO;
 import util.UIConstants;
 
-public class LivroForm extends JFrame {
-    private JTextField txtId, txtTitulo, txtAutor, txtPreco, txtPesquisa;
-    private JComboBox<GeneroLivro> cbGenero;
-    private JComboBox<String> cbCondicao, cbCondicaoFiltro;
-    private JSpinner spEstoque;
+public class ProdutoConsumoForm extends JFrame {
+    private JTextField txtId, txtNome, txtPreco, txtPesquisa;
+    private JComboBox<String> cbCategoria;
+    private JCheckBox chkDisponivel;
     private String currentImagePath = "";
     private JLabel lblImagePreview;
     private JTable tabela;
     private DefaultTableModel model;
-    private LivroDAO dao;
+    private ProdutoConsumoDAO dao;
 
-    public LivroForm() {
-        dao = new LivroDAO();
-
-        setTitle("Gestão de Acervo - Livros & Relíquias");
-        setSize(1100, 700);
+    public ProdutoConsumoForm() {
+        dao = new ProdutoConsumoDAO();
+        
+        setTitle("Gestão de Cardápio - Comidas & Bebidas");
+        setSize(1100, 650);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         getContentPane().setBackground(UIConstants.COLOR_PRIMARY());
 
         // Header
-        JLabel lblHeader = new JLabel("📚 Gestão do Acervo de Livros", SwingConstants.CENTER);
+        JLabel lblHeader = new JLabel("☕ Novo Item do Cardápio", SwingConstants.CENTER);
         lblHeader.setFont(UIConstants.FONT_TITLE);
         lblHeader.setForeground(UIConstants.COLOR_ACCENT());
         lblHeader.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
@@ -58,45 +54,36 @@ public class LivroForm extends JFrame {
         txtId.setFont(new Font("SansSerif", Font.PLAIN, 14));
         gbc.gridx = 1; formPanel.add(txtId, gbc);
 
-        gbc.gridy = 1; gbc.gridx = 0; formPanel.add(new JLabel("Título do Livro:"), gbc);
-        txtTitulo = new JTextField(20); txtTitulo.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        gbc.gridx = 1; formPanel.add(txtTitulo, gbc);
+        gbc.gridy = 1; gbc.gridx = 0; formPanel.add(new JLabel("Nome do Produto:"), gbc);
+        txtNome = new JTextField(20); txtNome.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        gbc.gridx = 1; formPanel.add(txtNome, gbc);
 
-        gbc.gridy = 2; gbc.gridx = 0; formPanel.add(new JLabel("Autor / Escritor:"), gbc);
-        txtAutor = new JTextField(20); txtAutor.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        gbc.gridx = 1; formPanel.add(txtAutor, gbc);
+        gbc.gridy = 2; gbc.gridx = 0; formPanel.add(new JLabel("Categoria:"), gbc);
+        cbCategoria = new JComboBox<>(new String[]{"Bebidas Quentes", "Bebidas Fias", "Salgados", "Doces", "Outros"});
+        cbCategoria.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        gbc.gridx = 1; formPanel.add(cbCategoria, gbc);
 
-        gbc.gridy = 3; gbc.gridx = 0; formPanel.add(new JLabel("Gênero Literário:"), gbc);
-        cbGenero = new JComboBox<>();
-        cbGenero.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        carregarGeneros();
-        gbc.gridx = 1; formPanel.add(cbGenero, gbc);
-
-        gbc.gridy = 4; gbc.gridx = 0; formPanel.add(new JLabel("Condição:"), gbc);
-        cbCondicao = new JComboBox<>(new String[]{"Novo", "Usado (Excelente)", "Usado (Marcas de Tempo)"});
-        cbCondicao.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        gbc.gridx = 1; formPanel.add(cbCondicao, gbc);
-
-        gbc.gridy = 5; gbc.gridx = 0; formPanel.add(new JLabel("Preço de Venda (R$):"), gbc);
+        gbc.gridy = 3; gbc.gridx = 0; formPanel.add(new JLabel("Preço Unitário (R$):"), gbc);
         txtPreco = new JTextField(10); txtPreco.setFont(new Font("SansSerif", Font.PLAIN, 14));
         gbc.gridx = 1; formPanel.add(txtPreco, gbc);
 
-        gbc.gridy = 6; gbc.gridx = 0; formPanel.add(new JLabel("Estoque Atual:"), gbc);
-        spEstoque = new JSpinner(new SpinnerNumberModel(1, 0, 1000, 1));
-        spEstoque.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        gbc.gridx = 1; formPanel.add(spEstoque, gbc);
+        gbc.gridy = 4; gbc.gridx = 0; formPanel.add(new JLabel("Disponibilidade:"), gbc);
+        chkDisponivel = new JCheckBox("Disponível para venda", true);
+        chkDisponivel.setOpaque(false);
+        chkDisponivel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        gbc.gridx = 1; formPanel.add(chkDisponivel, gbc);
 
-        gbc.gridy = 7; gbc.gridx = 0; formPanel.add(new JLabel("Foto da Capa:"), gbc);
-        JButton btnUpload = new JButton("Carregar Foto");
+        gbc.gridy = 5; gbc.gridx = 0; formPanel.add(new JLabel("Imagem do Produto:"), gbc);
+        JButton btnUpload = new JButton("Carregar Imagem");
         btnUpload.setFont(UIConstants.FONT_BUTTON);
         btnUpload.addActionListener(e -> selecionarImagem());
         gbc.gridx = 1; formPanel.add(btnUpload, gbc);
-
+        
         lblImagePreview = new JLabel("Nenhuma imagem");
         lblImagePreview.setPreferredSize(new Dimension(150, 150));
         lblImagePreview.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         lblImagePreview.setHorizontalAlignment(SwingConstants.CENTER);
-        gbc.gridy = 8; gbc.gridx = 1; formPanel.add(lblImagePreview, gbc);
+        gbc.gridy = 6; gbc.gridx = 1; formPanel.add(lblImagePreview, gbc);
 
         // Buttons
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
@@ -107,37 +94,23 @@ public class LivroForm extends JFrame {
         btnExcluir.setEnabled(util.SessionManager.isAdmin());
         btnPanel.add(btnNovo); btnPanel.add(btnSalvar); btnPanel.add(btnExcluir);
 
-        gbc.gridy = 9; gbc.gridx = 0; gbc.gridwidth = 2;
+        gbc.gridy = 7; gbc.gridx = 0; gbc.gridwidth = 2;
         formPanel.add(btnPanel, gbc);
 
         // RIGHT: Search & Table
         JPanel rightPanel = new JPanel(new BorderLayout());
         rightPanel.setOpaque(false);
 
-        JPanel searchPanel = new JPanel(new GridBagLayout());
+        JPanel searchPanel = new JPanel(new BorderLayout(5, 5));
         searchPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 5));
         searchPanel.setOpaque(false);
-        GridBagConstraints searchGbc = new GridBagConstraints();
-        searchGbc.insets = new Insets(5, 5, 5, 5);
-        searchGbc.fill = GridBagConstraints.HORIZONTAL;
-
-        searchGbc.gridx = 0; searchGbc.gridy = 0;
-        searchPanel.add(new JLabel("🔍 Pesquisar:"), searchGbc);
+        searchPanel.add(new JLabel("🔍 Pesquisar:"), BorderLayout.WEST);
         txtPesquisa = new JTextField();
         txtPesquisa.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        searchGbc.gridx = 1; searchGbc.weightx = 1.0;
-        searchPanel.add(txtPesquisa, searchGbc);
-
-        searchGbc.gridx = 2; searchGbc.weightx = 0.0;
-        searchPanel.add(new JLabel("Filtro Condição:"), searchGbc);
-        cbCondicaoFiltro = new JComboBox<>(new String[]{"Todos", "Novo", "Usado (Excelente)", "Usado (Marcas de Tempo)"});
-        cbCondicaoFiltro.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        searchGbc.gridx = 3;
-        searchPanel.add(cbCondicaoFiltro, searchGbc);
-
+        searchPanel.add(txtPesquisa, BorderLayout.CENTER);
         rightPanel.add(searchPanel, BorderLayout.NORTH);
 
-        String[] cols = {"ID", "Título", "Autor", "Preço", "Estoque", "Condição", "Gênero"};
+        String[] cols = {"ID", "Nome do Produto", "Categoria", "Preço (R$)", "Disponível"};
         model = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) { return false; }
@@ -146,7 +119,7 @@ public class LivroForm extends JFrame {
         tabela.setFont(new Font("SansSerif", Font.PLAIN, 14));
         tabela.setRowHeight(22);
         JScrollPane scrollTable = new JScrollPane(tabela);
-        scrollTable.setBorder(BorderFactory.createTitledBorder("Livros no Acervo"));
+        scrollTable.setBorder(BorderFactory.createTitledBorder("Cardápio Cadastrado"));
         rightPanel.add(scrollTable, BorderLayout.CENTER);
 
         splitPane.setLeftComponent(formPanel);
@@ -163,25 +136,16 @@ public class LivroForm extends JFrame {
             if (row >= 0) {
                 int id = (int) model.getValueAt(row, 0);
                 txtId.setText(String.valueOf(id));
-                txtTitulo.setText(model.getValueAt(row, 1).toString());
-                txtAutor.setText(model.getValueAt(row, 2).toString());
+                txtNome.setText(model.getValueAt(row, 1).toString());
+                cbCategoria.setSelectedItem(model.getValueAt(row, 2).toString());
                 txtPreco.setText(model.getValueAt(row, 3).toString().replace("R$ ", ""));
-                spEstoque.setValue(model.getValueAt(row, 4));
-                cbCondicao.setSelectedItem(model.getValueAt(row, 5).toString());
-                
-                String generoNome = model.getValueAt(row, 6).toString();
-                for (int i = 0; i < cbGenero.getItemCount(); i++) {
-                    if (cbGenero.getItemAt(i).getNomeGenero().equals(generoNome)) {
-                        cbGenero.setSelectedIndex(i);
-                        break;
-                    }
-                }
+                chkDisponivel.setSelected(model.getValueAt(row, 4).toString().equals("Sim"));
 
-                // Retrieve image path from raw lists (we'll re-list based on current query)
-                List<Livro> currentList = dao.listar(txtPesquisa.getText(), cbCondicaoFiltro.getSelectedItem().toString());
-                for (Livro l : currentList) {
-                    if (l.getIdLivro() == id) {
-                        currentImagePath = l.getImagePath();
+                // Get Image Path from database list matching this id
+                List<ProdutoConsumo> currentList = dao.listarTodos(txtPesquisa.getText());
+                for (ProdutoConsumo p : currentList) {
+                    if (p.getIdProduto() == id) {
+                        currentImagePath = p.getImagePath();
                         exibirImagem(currentImagePath);
                         break;
                     }
@@ -189,25 +153,15 @@ public class LivroForm extends JFrame {
             }
         });
 
-        DocumentListener dl = new DocumentListener() {
+        txtPesquisa.getDocument().addDocumentListener(new DocumentListener() {
             public void insertUpdate(DocumentEvent e) { filtrar(); }
             public void removeUpdate(DocumentEvent e) { filtrar(); }
             public void changedUpdate(DocumentEvent e) { filtrar(); }
-        };
-        txtPesquisa.getDocument().addDocumentListener(dl);
-        cbCondicaoFiltro.addActionListener(e -> filtrar());
+        });
 
         carregarDados();
     }
-
-    private void carregarGeneros() {
-        cbGenero.removeAllItems();
-        List<GeneroLivro> generos = new GeneroDAO().listar();
-        for (GeneroLivro g : generos) {
-            cbGenero.addItem(g);
-        }
-    }
-
+    
     private void selecionarImagem() {
         JFileChooser fc = new JFileChooser();
         if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -231,18 +185,14 @@ public class LivroForm extends JFrame {
     private void carregarDados() {
         model.setRowCount(0);
         String filterText = txtPesquisa != null ? txtPesquisa.getText() : "";
-        String condFiltro = cbCondicaoFiltro != null ? cbCondicaoFiltro.getSelectedItem().toString() : "Todos";
-        
-        List<Livro> livros = dao.listar(filterText, condFiltro);
-        for (Livro l : livros) {
+        List<ProdutoConsumo> produtos = dao.listarTodos(filterText);
+        for (ProdutoConsumo p : produtos) {
             model.addRow(new Object[]{
-                l.getIdLivro(), 
-                l.getTitulo(), 
-                l.getAutor(), 
-                String.format("%.2f", l.getPrecoVenda()), 
-                l.getEstoqueAtual(), 
-                l.getCondicaoLivro(),
-                l.getGenero().getNomeGenero()
+                p.getIdProduto(),
+                p.getNomeAlimento(),
+                p.getCategoriaCardapio(),
+                String.format("%.2f", p.getPrecoUnitario()),
+                p.isDisponivel() ? "Sim" : "Não"
             });
         }
     }
@@ -253,42 +203,30 @@ public class LivroForm extends JFrame {
 
     private void salvar() {
         try {
-            String titulo = txtTitulo.getText().trim();
-            String autor = txtAutor.getText().trim();
-            String condicao = (String) cbCondicao.getSelectedItem();
+            String nome = txtNome.getText().trim();
+            String categoria = (String) cbCategoria.getSelectedItem();
             String precoStr = txtPreco.getText().trim().replace(",", ".");
+            boolean disponivel = chkDisponivel.isSelected();
             
-            if (titulo.isEmpty() || autor.isEmpty() || precoStr.isEmpty()) {
+            if (nome.isEmpty() || precoStr.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.");
                 return;
             }
 
             double preco = Double.parseDouble(precoStr);
-            int estoque = (int) spEstoque.getValue();
-            GeneroLivro genero = (GeneroLivro) cbGenero.getSelectedItem();
-            
-            if (genero == null) {
-                JOptionPane.showMessageDialog(this, "Por favor, cadastre um gênero literário primeiro.");
-                return;
-            }
-
-            Livro.validarPreco(condicao, preco);
 
             if (txtId.getText().isEmpty()) {
-                Livro l = new Livro(0, titulo, autor, condicao, preco, estoque, genero, currentImagePath);
-                dao.salvar(l);
-                JOptionPane.showMessageDialog(this, "Obra cadastrada com sucesso!");
+                ProdutoConsumo p = new ProdutoConsumo(0, nome, preco, categoria, disponivel, currentImagePath);
+                dao.salvar(p);
+                JOptionPane.showMessageDialog(this, "Produto '" + nome + "' adicionado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 int id = Integer.parseInt(txtId.getText());
-                Livro l = new Livro(id, titulo, autor, condicao, preco, estoque, genero, currentImagePath);
-                dao.atualizar(l);
-                JOptionPane.showMessageDialog(this, "Obra atualizada com sucesso!");
+                ProdutoConsumo p = new ProdutoConsumo(id, nome, preco, categoria, disponivel, currentImagePath);
+                dao.atualizar(p);
+                JOptionPane.showMessageDialog(this, "Produto '" + nome + "' atualizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             }
-            
             carregarDados();
             limpar();
-        } catch (PrecoInvalidoSeboException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Regra de Negócio", JOptionPane.WARNING_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao salvar: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
@@ -296,14 +234,14 @@ public class LivroForm extends JFrame {
 
     private void excluir() {
         if (txtId.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Selecione um livro para excluir.");
+            JOptionPane.showMessageDialog(this, "Selecione um produto para excluir.");
             return;
         }
-        int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir esta obra?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
+        int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir este produto do cardápio?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             int id = Integer.parseInt(txtId.getText());
             dao.deletar(id);
-            JOptionPane.showMessageDialog(this, "Obra excluída com sucesso!");
+            JOptionPane.showMessageDialog(this, "Produto excluído com sucesso!");
             carregarDados();
             limpar();
         }
@@ -311,12 +249,10 @@ public class LivroForm extends JFrame {
 
     private void limpar() {
         txtId.setText("");
-        txtTitulo.setText("");
-        txtAutor.setText("");
+        txtNome.setText("");
         txtPreco.setText("");
-        spEstoque.setValue(1);
-        cbCondicao.setSelectedIndex(0);
-        if (cbGenero.getItemCount() > 0) cbGenero.setSelectedIndex(0);
+        cbCategoria.setSelectedIndex(0);
+        chkDisponivel.setSelected(true);
         currentImagePath = "";
         lblImagePreview.setIcon(null);
         lblImagePreview.setText("Nenhuma imagem");

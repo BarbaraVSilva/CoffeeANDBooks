@@ -6,15 +6,17 @@ public class ProdutoConsumo {
     private double precoUnitario;
     private String categoriaCardapio;
     private boolean disponivel;
+    private String imagePath;
 
     public ProdutoConsumo() {}
 
-    public ProdutoConsumo(int idProduto, String nomeAlimento, double precoUnitario, String categoriaCardapio, boolean disponivel) {
+    public ProdutoConsumo(int idProduto, String nomeAlimento, double precoUnitario, String categoriaCardapio, boolean disponivel, String imagePath) {
         this.idProduto = idProduto;
         this.nomeAlimento = nomeAlimento;
         this.precoUnitario = precoUnitario;
         this.categoriaCardapio = categoriaCardapio;
         this.disponivel = disponivel;
+        this.imagePath = imagePath;
     }
 
     public int getIdProduto() { return idProduto; }
@@ -27,4 +29,11 @@ public class ProdutoConsumo {
     public void setCategoriaCardapio(String categoriaCardapio) { this.categoriaCardapio = categoriaCardapio; }
     public boolean isDisponivel() { return disponivel; }
     public void setDisponivel(boolean disponivel) { this.disponivel = disponivel; }
+    public String getImagePath() { return imagePath; }
+    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
+
+    @Override
+    public String toString() {
+        return nomeAlimento + " - R$ " + String.format("%.2f", precoUnitario);
+    }
 }

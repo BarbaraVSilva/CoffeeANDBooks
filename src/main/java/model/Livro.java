@@ -10,10 +10,11 @@ public class Livro {
     private double precoVenda;
     private int estoqueAtual;
     private GeneroLivro genero;
+    private String imagePath;
 
     public Livro() {}
 
-    public Livro(int idLivro, String titulo, String autor, String condicaoLivro, double precoVenda, int estoqueAtual, GeneroLivro genero) throws PrecoInvalidoSeboException {
+    public Livro(int idLivro, String titulo, String autor, String condicaoLivro, double precoVenda, int estoqueAtual, GeneroLivro genero, String imagePath) throws PrecoInvalidoSeboException {
         validarPreco(condicaoLivro, precoVenda);
         this.idLivro = idLivro;
         this.titulo = titulo;
@@ -22,6 +23,7 @@ public class Livro {
         this.precoVenda = precoVenda;
         this.estoqueAtual = estoqueAtual;
         this.genero = genero;
+        this.imagePath = imagePath;
     }
 
     public static void validarPreco(String condicao, double preco) throws PrecoInvalidoSeboException {
@@ -45,4 +47,11 @@ public class Livro {
     public void setEstoqueAtual(int estoqueAtual) { this.estoqueAtual = estoqueAtual; }
     public GeneroLivro getGenero() { return genero; }
     public void setGenero(GeneroLivro genero) { this.genero = genero; }
+    public String getImagePath() { return imagePath; }
+    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
+
+    @Override
+    public String toString() {
+        return "Livro: " + titulo + " (Estoque: " + estoqueAtual + ") - R$ " + String.format("%.2f", precoVenda);
+    }
 }

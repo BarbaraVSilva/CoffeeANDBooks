@@ -9,7 +9,7 @@ import java.util.List;
 
 public class LivroDAO {
     public void salvar(Livro l) {
-        String sql = "INSERT INTO LIVRO (titulo, autor, condicao_livro, preco_venda, estoque_atual, fk_genero) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO LIVRO (titulo, autor, condicao_livro, preco_venda, estoque_atual, fk_genero, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, l.getTitulo());
@@ -18,6 +18,7 @@ public class LivroDAO {
             stmt.setDouble(4, l.getPrecoVenda());
             stmt.setInt(5, l.getEstoqueAtual());
             stmt.setInt(6, l.getGenero().getIdGenero());
+            stmt.setString(7, l.getImagePath());
             stmt.executeUpdate();
         } catch (SQLException e) { e.printStackTrace(); }
     }
@@ -48,10 +49,35 @@ public class LivroDAO {
                         rs.getString("nome_genero"), rs.getString("localizacao_estante"));
                     lista.add(new Livro(rs.getInt("id_livro"), rs.getString("titulo"), 
                         rs.getString("autor"), rs.getString("condicao_livro"), 
-                        rs.getDouble("preco_venda"), rs.getInt("estoque_atual"), g));
+                        rs.getDouble("preco_venda"), rs.getInt("estoque_atual"), g, rs.getString("image_path")));
                 }
             }
         } catch (Exception e) { e.printStackTrace(); }
         return lista;
+    }
+
+    public void atualizar(Livro l) {
+        String sql = "UPDATE LIVRO SET titulo = ?, autor = ?, condicao_livro = ?, preco_venda = ?, estoque_atual = ?, fk_genero = ?, image_path = ? WHERE id_livro = ?";
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, l.getTitulo());
+            stmt.setString(2, l.getAutor());
+            stmt.setString(3, l.getCondicaoLivro());
+            stmt.setDouble(4, l.getPrecoVenda());
+            stmt.setInt(5, l.getEstoqueAtual());
+            stmt.setInt(6, l.getGenero().getIdGenero());
+            stmt.setString(7, l.getImagePath());
+            stmt.setInt(8, l.getIdLivro());
+            stmt.executeUpdate();
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
+
+    public void deletar(int id) {
+        String sql = "DELETE FROM LIVRO WHERE id_livro = ?";
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) { e.printStackTrace(); }
     }
 }

@@ -43,7 +43,36 @@ public class UIConstants {
 
     public static void setDarkTheme(boolean dark) {
         darkTheme = dark;
-        initLookAndFeel();
+        try {
+            if (dark) {
+                javax.swing.UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatDarkLaf());
+            } else {
+                javax.swing.UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+            }
+            com.formdev.flatlaf.FlatLaf.updateUI();
+            
+            // Loop through all active frames and update them
+            for (java.awt.Frame f : java.awt.Frame.getFrames()) {
+                javax.swing.SwingUtilities.updateComponentTreeUI(f);
+                
+                // Refresh content pane backgrounds
+                if (f instanceof javax.swing.JFrame) {
+                    ((javax.swing.JFrame) f).getContentPane().setBackground(COLOR_PRIMARY());
+                }
+                
+                // If it is the MainFrame, rebuild it to apply the dynamic design system fully
+                if (f.getClass().getName().endsWith("MainFrame")) {
+                    f.dispose();
+                    // Open a new MainFrame dynamically to avoid compile circularities
+                    javax.swing.JFrame newMain = (javax.swing.JFrame) Class.forName("view.MainFrame").getDeclaredConstructor().newInstance();
+                    newMain.setVisible(true);
+                } else {
+                    f.repaint();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static boolean isDarkTheme() {

@@ -135,3 +135,14 @@ CREATE TABLE IF NOT EXISTS DOACAO (
 -- Add image_path to LIVRO and PRODUTO_CONSUMO
 ALTER TABLE LIVRO ADD COLUMN image_path VARCHAR(255);
 ALTER TABLE PRODUTO_CONSUMO ADD COLUMN image_path VARCHAR(255);
+
+-- Table: CLIENTE (Customer registration and loyalty)
+CREATE TABLE IF NOT EXISTS CLIENTE (
+    id_cliente INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cpf VARCHAR(14) UNIQUE,
+    email VARCHAR(100),
+    telefone VARCHAR(20),
+    pontos_fidelidade INT DEFAULT 0,
+    data_nascimento DATE
+);
