@@ -29,11 +29,20 @@ public class MainFrame extends JFrame {
             return;
         }
 
-        // Sidebar Panel (WEST)
-        JPanel sidebar = new JPanel();
+        // Sidebar Panel (WEST) with custom getPreferredSize to support scrolling dynamically
+        JPanel sidebar = new JPanel() {
+            @Override
+            public Dimension getPreferredSize() {
+                Dimension pref = super.getPreferredSize();
+                Container parent = getParent();
+                if (parent instanceof JViewport) {
+                    pref.height = Math.max(pref.height, parent.getHeight());
+                }
+                return new Dimension(240, pref.height);
+            }
+        };
         sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
         sidebar.setBackground(UIConstants.COLOR_ACCENT());
-        sidebar.setPreferredSize(new Dimension(260, getHeight()));
         sidebar.setBorder(new EmptyBorder(15, 10, 15, 10));
 
         // Sidebar Header Logo/Title
@@ -91,7 +100,15 @@ public class MainFrame extends JFrame {
             dispose();
         });
 
-        add(sidebar, BorderLayout.WEST);
+        JScrollPane scrollSidebar = new JScrollPane(sidebar);
+        scrollSidebar.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollSidebar.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollSidebar.setBorder(BorderFactory.createEmptyBorder());
+        scrollSidebar.setBackground(UIConstants.COLOR_ACCENT());
+        scrollSidebar.getViewport().setBackground(UIConstants.COLOR_ACCENT());
+        scrollSidebar.setPreferredSize(new Dimension(260, getHeight()));
+
+        add(scrollSidebar, BorderLayout.WEST);
 
         // Main Dashboard Panel (CENTER)
         JPanel dashboardPanel = new JPanel(new BorderLayout());

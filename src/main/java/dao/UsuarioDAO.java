@@ -11,7 +11,7 @@ public class UsuarioDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, username);
-            stmt.setString(2, password);
+            stmt.setString(2, util.SecurityUtil.hashPassword(password));
             
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -34,7 +34,7 @@ public class UsuarioDAO {
         String sql = "UPDATE USUARIO SET password = ?, data_ultima_senha = CURRENT_DATE WHERE id_usuario = ?";
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, novaSenha);
+            stmt.setString(1, util.SecurityUtil.hashPassword(novaSenha));
             stmt.setInt(2, idUsuario);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {

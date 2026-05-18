@@ -217,18 +217,40 @@ public class ClienteForm extends JFrame {
                 return;
             }
 
+            // 1. Validate and format CPF
+            if (!util.SecurityUtil.isValidCpf(cpf)) {
+                JOptionPane.showMessageDialog(this, "CPF inválido! Por favor, informe um CPF correto com 11 dígitos.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            String formattedCpf = util.SecurityUtil.formatCpf(cpf);
+
+            // 2. Validate E-mail if present
+            if (!email.isEmpty() && !util.SecurityUtil.isValidEmail(email)) {
+                JOptionPane.showMessageDialog(this, "E-mail inválido! Por favor, informe um endereço de e-mail no formato correto (exemplo@dominio.com).", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // 3. Validate and format Telefone if present
+            if (!telefone.isEmpty()) {
+                if (!util.SecurityUtil.isValidPhone(telefone)) {
+                    JOptionPane.showMessageDialog(this, "Telefone inválido! Deve conter DDD e ter 10 ou 11 dígitos.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                telefone = util.SecurityUtil.formatPhone(telefone);
+            }
+
             Date dob = null;
             if (!dobRaw.isEmpty()) {
                 dob = sdf.parse(dobRaw);
             }
 
             if (txtId.getText().isEmpty()) {
-                Cliente c = new Cliente(0, nome, cpf, email, telefone, currentPontos, dob);
+                Cliente c = new Cliente(0, nome, formattedCpf, email, telefone, currentPontos, dob);
                 dao.inserir(c);
                 JOptionPane.showMessageDialog(this, "Cliente cadastrado com sucesso!");
             } else {
                 int id = Integer.parseInt(txtId.getText());
-                Cliente c = new Cliente(id, nome, cpf, email, telefone, currentPontos, dob);
+                Cliente c = new Cliente(id, nome, formattedCpf, email, telefone, currentPontos, dob);
                 dao.atualizar(c);
                 JOptionPane.showMessageDialog(this, "Cadastro do cliente atualizado com sucesso!");
             }

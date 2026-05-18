@@ -183,6 +183,15 @@ USUARIO (id_usuario, username, password, role, data_ultima_senha)
 
 ---
 
+## 🛡️ 10b. Inicialização Auto-Recuperável (Self-Healing)
+Implementamos uma camada de resiliência e segurança robusta na inicialização do sistema (`DatabaseUtil`):
+
+*   **Criação Dinâmica de Tabelas:** O sistema detecta a ausência de tabelas essenciais (como `CLIENTE` e `INGREDIENTE`) e as cria de forma transparente e automática no primeiro login.
+*   **Migração Transparente de Dados:** Realiza migrações de tabelas de forma segura caso colunas antigas estejam ausentes.
+*   **Criptografia de Senhas Legadas:** Converte automaticamente senhas em texto puro para hashes **SHA-256** no primeiro boot, garantindo segurança de nível de produção (com suporte a RBAC granular).
+
+---
+
 ## 🗂️ 11. DER - Diagrama de Entidade-Relacionamento
 
 Abaixo está a modelagem do nosso banco de dados relacional `coffeebooks_db` desenhado via **Mermaid**:
