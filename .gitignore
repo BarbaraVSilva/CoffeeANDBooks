@@ -39,3 +39,4 @@ buildNumber.properties
 *.db
 *.sqlite
 sql/data/
+criterios avaliacao/

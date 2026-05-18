@@ -60,6 +60,7 @@ public class MainFrame extends JFrame {
         addNavButton(sidebar, "☕ Comidas e Bebidas", e -> new ProdutoConsumoForm().setVisible(true));
         addNavButton(sidebar, "📦 Insumos de Cafeteria", e -> new IngredienteForm().setVisible(true));
         addNavButton(sidebar, "👥 Clientes e Fidelidade", e -> new ClienteForm().setVisible(true));
+        addNavButton(sidebar, "🕐 Lista de Espera (RAM)", e -> new ListaEsperaFrame().setVisible(true));
         addNavButton(sidebar, "📥 Importação de CSV", e -> new ImportacaoDadosFrame().setVisible(true));
         
         sidebar.add(Box.createVerticalStrut(12));
