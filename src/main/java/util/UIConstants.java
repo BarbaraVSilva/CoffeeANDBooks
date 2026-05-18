@@ -2,7 +2,6 @@ package util;
 
 import java.awt.Color;
 import java.awt.Font;
-import javax.swing.border.LineBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
