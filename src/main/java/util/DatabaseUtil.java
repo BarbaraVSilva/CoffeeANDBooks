@@ -80,6 +80,55 @@ public class DatabaseUtil {
         try (Connection conn = getConnection();
              java.sql.Statement stmt = conn.createStatement()) {
             initializeDatabaseSchema(conn);
+            
+            // Auto-update missing image paths in the database if they are null
+            try (PreparedStatement stmtL = conn.prepareStatement("UPDATE LIVRO SET image_path = ? WHERE titulo = ? AND image_path IS NULL")) {
+                String[][] books = {
+                    {"src/main/resources/assets/duna.jpg", "Duna"},
+                    {"src/main/resources/assets/fundacao.jpg", "Fundação"},
+                    {"src/main/resources/assets/iluminado.jpg", "O Iluminado"},
+                    {"src/main/resources/assets/domcasmurro.jpg", "Dom Casmurro"},
+                    {"src/main/resources/assets/republica.jpg", "A República"},
+                    {"src/main/resources/assets/pequenoprincipe.jpg", "O Pequeno Príncipe"},
+                    {"src/main/resources/assets/1984.jpg", "1984"},
+                    {"src/main/resources/assets/cemanos.jpg", "Cem Anos de Solidão"},
+                    {"src/main/resources/assets/sherlock.jpg", "Sherlock Holmes: Estudo em Vermelho"},
+                    {"src/main/resources/assets/hobbit.jpg", "O Hobbit"},
+                    {"src/main/resources/assets/cortico.jpg", "O Cortiço"}
+                };
+                for (String[] b : books) {
+                    stmtL.setString(1, b[0]);
+                    stmtL.setString(2, b[1]);
+                    stmtL.executeUpdate();
+                }
+            } catch (Exception e) {
+                System.err.println("Aviso: Falha ao atualizar caminhos das imagens dos livros: " + e.getMessage());
+            }
+
+            try (PreparedStatement stmtP = conn.prepareStatement("UPDATE PRODUTO_CONSUMO SET image_path = ? WHERE nome_alimento = ? AND image_path IS NULL")) {
+                String[][] prods = {
+                    {"src/main/resources/assets/mocha.jpg", "Shake Shake Shakespeare (Mocha)"},
+                    {"src/main/resources/assets/capuccino.jpg", "Capuccino Hemingway"},
+                    {"src/main/resources/assets/pao_queijo.jpg", "Pão de Queijo da Vila"},
+                    {"src/main/resources/assets/torta_duna.jpg", "Torta Red Velvet \"Duna\""},
+                    {"src/main/resources/assets/suco_laranja.jpg", "Suco Natural \"Laranja Mecânica\""},
+                    {"src/main/resources/assets/sanduiche.jpg", "Sanduíche \"Metamorfose\""},
+                    {"src/main/resources/assets/croissant.jpg", "Croissant Baudelaire"},
+                    {"src/main/resources/assets/empada.jpg", "Empada Edgar Allan Poe"},
+                    {"src/main/resources/assets/cold_brew.jpg", "Cold Brew Orwell"},
+                    {"src/main/resources/assets/soda_italiana.jpg", "Soda Italiana Poe"},
+                    {"src/main/resources/assets/torta_limao.jpg", "Torta de Limão Virginia Woolf"},
+                    {"src/main/resources/assets/brownie.jpg", "Brownie Bukowski"}
+                };
+                for (String[] p : prods) {
+                    stmtP.setString(1, p[0]);
+                    stmtP.setString(2, p[1]);
+                    stmtP.executeUpdate();
+                }
+            } catch (Exception e) {
+                System.err.println("Aviso: Falha ao atualizar caminhos das imagens do cardápio: " + e.getMessage());
+            }
+
             java.sql.DatabaseMetaData meta = conn.getMetaData();
             
             // Migrate CLIENTE

@@ -62,33 +62,33 @@ INSERT INTO GENERO_LIVRO (nome_genero, localizacao_estante) VALUES
 ('Gastronomia', 'Prateleira Suspensa - Balcão');
 
 -- Seed Data: LIVRO (Including low stock for alerts)
-INSERT INTO LIVRO (titulo, autor, condicao_livro, preco_venda, estoque_atual, fk_genero) VALUES 
-('Duna', 'Frank Herbert', 'Novo', 89.90, 15, 1),
-('Fundação', 'Isaac Asimov', 'Usado (Excelente)', 45.00, 2, 1), -- Alerta Amarelo
-('O Iluminado', 'Stephen King', 'Novo', 65.00, 8, 2),
-('Dom Casmurro', 'Machado de Assis', 'Usado (Marcas de Tempo)', 15.00, 0, 3), -- Alerta Vermelho
-('A República', 'Platão', 'Novo', 42.00, 1, 4), -- Alerta Amarelo
-('O Pequeno Príncipe', 'Antoine de Saint-Exupéry', 'Novo', 35.00, 20, 3),
-('1984', 'George Orwell', 'Novo', 49.90, 10, 1),
-('Cem Anos de Solidão', 'Gabriel García Márquez', 'Novo', 75.00, 5, 4),
-('Sherlock Holmes: Estudo em Vermelho', 'Arthur Conan Doyle', 'Usado (Excelente)', 25.00, 3, 2),
-('O Hobbit', 'J.R.R. Tolkien', 'Novo', 59.90, 8, 1),
-('O Cortiço', 'Aluísio Azevedo', 'Usado (Marcas de Tempo)', 12.50, 4, 3);
+INSERT INTO LIVRO (titulo, autor, condicao_livro, preco_venda, estoque_atual, fk_genero, image_path) VALUES 
+('Duna', 'Frank Herbert', 'Novo', 89.90, 15, 1, 'src/main/resources/assets/duna.jpg'),
+('Fundação', 'Isaac Asimov', 'Usado (Excelente)', 45.00, 2, 1, 'src/main/resources/assets/fundacao.jpg'), -- Alerta Amarelo
+('O Iluminado', 'Stephen King', 'Novo', 65.00, 8, 2, 'src/main/resources/assets/iluminado.jpg'),
+('Dom Casmurro', 'Machado de Assis', 'Usado (Marcas de Tempo)', 15.00, 0, 3, 'src/main/resources/assets/domcasmurro.jpg'), -- Alerta Vermelho
+('A República', 'Platão', 'Novo', 42.00, 1, 4, 'src/main/resources/assets/republica.jpg'), -- Alerta Amarelo
+('O Pequeno Príncipe', 'Antoine de Saint-Exupéry', 'Novo', 35.00, 20, 3, 'src/main/resources/assets/pequenoprincipe.jpg'),
+('1984', 'George Orwell', 'Novo', 49.90, 10, 1, 'src/main/resources/assets/1984.jpg'),
+('Cem Anos de Solidão', 'Gabriel García Márquez', 'Novo', 75.00, 5, 4, 'src/main/resources/assets/cemanos.jpg'),
+('Sherlock Holmes: Estudo em Vermelho', 'Arthur Conan Doyle', 'Usado (Excelente)', 25.00, 3, 2, 'src/main/resources/assets/sherlock.jpg'),
+('O Hobbit', 'J.R.R. Tolkien', 'Novo', 59.90, 8, 1, 'src/main/resources/assets/hobbit.jpg'),
+('O Cortiço', 'Aluísio Azevedo', 'Usado (Marcas de Tempo)', 12.50, 4, 3, 'src/main/resources/assets/cortico.jpg');
 
 -- Seed Data: PRODUTO_CONSUMO (Literary Themes)
-INSERT INTO PRODUTO_CONSUMO (nome_alimento, preco_unitario, categoria_cardapio) VALUES 
-('Shake Shake Shakespeare (Mocha)', 14.50, 'Bebidas Quentes'),
-('Capuccino Hemingway', 12.00, 'Bebidas Quentes'),
-('Pão de Queijo da Vila', 5.50, 'Salgados'),
-('Torta Red Velvet "Duna"', 18.00, 'Doces'),
-('Suco Natural "Laranja Mecânica"', 9.50, 'Bebidas Frias'),
-('Sanduíche "Metamorfose"', 22.00, 'Salgados'),
-('Croissant Baudelaire', 9.50, 'Salgados'),
-('Empada Edgar Allan Poe', 8.00, 'Salgados'),
-('Cold Brew Orwell', 11.50, 'Bebidas Frias'),
-('Soda Italiana Poe', 10.00, 'Bebidas Frias'),
-('Torta de Limão Virginia Woolf', 15.00, 'Doces'),
-('Brownie Bukowski', 12.00, 'Doces');
+INSERT INTO PRODUTO_CONSUMO (nome_alimento, preco_unitario, categoria_cardapio, image_path) VALUES 
+('Shake Shake Shakespeare (Mocha)', 14.50, 'Bebidas Quentes', 'src/main/resources/assets/mocha.jpg'),
+('Capuccino Hemingway', 12.00, 'Bebidas Quentes', 'src/main/resources/assets/capuccino.jpg'),
+('Pão de Queijo da Vila', 5.50, 'Salgados', 'src/main/resources/assets/pao_queijo.jpg'),
+('Torta Red Velvet "Duna"', 18.00, 'Doces', 'src/main/resources/assets/torta_duna.jpg'),
+('Suco Natural "Laranja Mecânica"', 9.50, 'Bebidas Frias', 'src/main/resources/assets/suco_laranja.jpg'),
+('Sanduíche "Metamorfose"', 22.00, 'Salgados', 'src/main/resources/assets/sanduiche.jpg'),
+('Croissant Baudelaire', 9.50, 'Salgados', 'src/main/resources/assets/croissant.jpg'),
+('Empada Edgar Allan Poe', 8.00, 'Salgados', 'src/main/resources/assets/empada.jpg'),
+('Cold Brew Orwell', 11.50, 'Bebidas Frias', 'src/main/resources/assets/cold_brew.jpg'),
+('Soda Italiana Poe', 10.00, 'Bebidas Frias', 'src/main/resources/assets/soda_italiana.jpg'),
+('Torta de Limão Virginia Woolf', 15.00, 'Doces', 'src/main/resources/assets/torta_limao.jpg'),
+('Brownie Bukowski', 12.00, 'Doces', 'src/main/resources/assets/brownie.jpg');
 
 -- Table: USUARIO
 CREATE TABLE IF NOT EXISTS USUARIO (

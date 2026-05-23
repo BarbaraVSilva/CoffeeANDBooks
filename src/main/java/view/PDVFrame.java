@@ -240,18 +240,49 @@ public class PDVFrame extends JFrame {
         // Attempt to load image
         JLabel lblImg = new JLabel();
         lblImg.setHorizontalAlignment(SwingConstants.CENTER);
-        if (imagePath != null && !imagePath.isEmpty() && new java.io.File(imagePath).exists()) {
+        
+        ImageIcon icon = null;
+        if (imagePath != null && !imagePath.isEmpty()) {
+            // 1. Try direct file path relative to root
+            java.io.File file = new java.io.File(imagePath);
+            if (file.exists()) {
+                icon = new ImageIcon(file.getPath());
+            } else {
+                // 2. Try loading from resources (standard Maven classpath)
+                String resourcePath = imagePath;
+                if (resourcePath.startsWith("src/main/resources")) {
+                    resourcePath = resourcePath.substring("src/main/resources".length());
+                }
+                resourcePath = resourcePath.replace('\\', '/');
+                if (!resourcePath.startsWith("/")) {
+                    resourcePath = "/" + resourcePath;
+                }
+                
+                java.net.URL imgUrl = PDVFrame.class.getResource(resourcePath);
+                if (imgUrl != null) {
+                    icon = new ImageIcon(imgUrl);
+                } else {
+                    // 3. Fallback: try relative from root or direct filename in assets
+                    String filename = new java.io.File(imagePath).getName();
+                    java.io.File rootAssetFile = new java.io.File("src/main/resources/assets/" + filename);
+                    if (rootAssetFile.exists()) {
+                        icon = new ImageIcon(rootAssetFile.getPath());
+                    }
+                }
+            }
+        }
+
+        if (icon != null) {
             try {
-                ImageIcon icon = new ImageIcon(imagePath);
                 Image img = icon.getImage().getScaledInstance(140, 80, Image.SCALE_SMOOTH);
                 lblImg.setIcon(new ImageIcon(img));
             } catch (Exception ex) {
                 lblImg.setText(defaultEmoji);
-                lblImg.setFont(new Font("SansSerif", Font.PLAIN, 48));
+                lblImg.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 48));
             }
         } else {
             lblImg.setText(defaultEmoji);
-            lblImg.setFont(new Font("SansSerif", Font.PLAIN, 48));
+            lblImg.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 48));
         }
 
         JLabel lblInfo = new JLabel("<html><center><b>" + name + "</b><br><font color='green'>R$ " + String.format("%.2f", price) + "</font></center></html>", SwingConstants.CENTER);
