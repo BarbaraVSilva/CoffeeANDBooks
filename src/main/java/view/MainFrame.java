@@ -222,10 +222,10 @@ public class MainFrame extends JFrame {
     }
 
     private void addSectionHeader(JPanel panel, String text) {
-        JLabel lblHeader = new JLabel(text);
+        JLabel lblHeader = new JLabel(text, SwingConstants.CENTER);
         lblHeader.setFont(new Font("SansSerif", Font.BOLD, 11));
         lblHeader.setForeground(new Color(230, 200, 180));
-        lblHeader.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblHeader.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblHeader.setBorder(BorderFactory.createEmptyBorder(5, 5, 2, 5));
         panel.add(lblHeader);
     }
@@ -233,13 +233,13 @@ public class MainFrame extends JFrame {
     private void addNavButton(JPanel panel, String text, java.awt.event.ActionListener action) {
         JButton btn = new JButton(text);
         btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
-        btn.setAlignmentX(Component.LEFT_ALIGNMENT);
+        btn.setAlignmentX(Component.CENTER_ALIGNMENT);
         btn.setBackground(UIConstants.COLOR_ACCENT().darker());
         btn.setForeground(Color.WHITE);
         btn.setFocusPainted(false);
         btn.setFont(UIConstants.FONT_BUTTON);
         btn.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
-        btn.setHorizontalAlignment(SwingConstants.LEFT);
+        btn.setHorizontalAlignment(SwingConstants.CENTER);
         
         // Hover effect
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
