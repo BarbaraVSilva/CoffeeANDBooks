@@ -1,0 +1,143 @@
+/* Main Stylesheet for Coffee&Books JavaFX Application */
+
+.root {
+    -fx-font-family: "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    -fx-background-color: #FAF7F2;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    -fx-background-color: #1e120c;
+    -fx-padding: 20px;
+    -fx-spacing: 12px;
+}
+
+.sidebar-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-fill: #D4AF37;
+    -fx-padding: 0 0 20px 0;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #b5a499;
+    -fx-font-size: 14px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10px 15px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s ease;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: #322016;
+    -fx-text-fill: #FAF7F2;
+}
+
+.sidebar-button:focused {
+    -fx-background-color: #D4AF37;
+    -fx-text-fill: #1e120c;
+    -fx-font-weight: bold;
+}
+
+/* Top bar Styles */
+.top-bar {
+    -fx-background-color: linear-gradient(to right, #2c1e18, #3e2b22);
+    -fx-padding: 15px 30px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);
+}
+
+.top-bar-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FAF7F2;
+}
+
+.top-bar-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #b5a499;
+}
+
+/* Dashboard Cards */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 15, 0, 0, 8);
+    -fx-spacing: 8px;
+}
+
+.card-title {
+    -fx-font-size: 13px;
+    -fx-text-fill: #8e7a6f;
+    -fx-font-weight: bold;
+    -fx-text-transform: uppercase;
+}
+
+.card-value {
+    -fx-font-size: 28px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #2c1e18;
+}
+
+.card-icon-container {
+    -fx-background-color: #f7ede2;
+    -fx-background-radius: 50%;
+    -fx-padding: 10px;
+}
+
+/* Alert styles */
+.alert-card {
+    -fx-background-color: #fff1f0;
+    -fx-border-color: #ffccc7;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 12px;
+}
+
+.alert-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #cf1322;
+}
+
+.alert-desc {
+    -fx-font-size: 12px;
+    -fx-text-fill: #595959;
+}
+
+/* Button styles */
+.btn-primary {
+    -fx-background-color: #D4AF37;
+    -fx-text-fill: #1e120c;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 16px;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #bfa032;
+}
+
+.btn-secondary {
+    -fx-background-color: #e8e2d8;
+    -fx-text-fill: #2c1e18;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 16px;
+    -fx-cursor: hand;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #dad2c7;
+}
+
+/* List views & tables */
+.list-container {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-padding: 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 15, 0, 0, 8);
+}

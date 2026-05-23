@@ -129,6 +129,7 @@ Abaixo está o mapeamento exato de cada critério de avaliação da disciplina c
 *   **Coleção Java Utilizada:** `ArrayList<Map<String, String>>` para armazenamento rápido dos clientes.
 *   **Operações de Manipulação de Coleção:**
     *   **Inclusão (Adicionar):** Insere um `LinkedHashMap` na coleção.
+    *   **Alteração (Alterar):** Modifica o item selecionado diretamente no `ArrayList`.
     *   **Exclusão (Remover / Chamar):** Remove o primeiro elemento (`remove(0)`) ou remove por ID.
     *   **Consulta (Pesquisar):** Filtra e reconstrói o GridView dinamicamente conforme digitação.
 *   **5+ Campos de Entrada Exigidos:**

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="view.MainViewController"
+            prefHeight="650.0" prefWidth="900.0"
+            stylesheets="@style.css">
+
+    <!-- Left Sidebar -->
+    <left>
+        <VBox styleClass="sidebar" prefWidth="240.0" spacing="10">
+            <Label text="Coffee &amp; Books" styleClass="sidebar-title">
+                <font>
+                    <Font name="System Bold" size="20.0" />
+                </font>
+            </Label>
+            
+            <Button text="🏠 Painel Principal" styleClass="sidebar-button" maxWidth="Infinity" fx:id="btnDashboard" />
+            <Button text="📚 Gerenciar Acervo" styleClass="sidebar-button" maxWidth="Infinity" fx:id="btnAcervo" />
+            <Button text="☕ Cardápio &amp; PDV" styleClass="sidebar-button" maxWidth="Infinity" fx:id="btnCardapio" />
+            <Button text="👥 Clientes &amp; Pontos" styleClass="sidebar-button" maxWidth="Infinity" fx:id="btnClientes" />
+            <Separator style="-fx-background-color: #322016;" />
+            <Button text="🚚 Fornecedores" styleClass="sidebar-button" maxWidth="Infinity" fx:id="btnFornecedores" onAction="#handleViewFornecedores" />
+            <Button text="🏢 Editoras" styleClass="sidebar-button" maxWidth="Infinity" fx:id="btnEditoras" onAction="#handleViewEditoras" />
+            <Button text="🎁 Doações de Livros" styleClass="sidebar-button" maxWidth="Infinity" fx:id="btnDoacoes" onAction="#handleViewDoacoes" />
+            <Spacer VBox.vgrow="ALWAYS" />
+            <Button text="☕ Abrir Sistema Swing" styleClass="btn-primary" maxWidth="Infinity" onAction="#handleLaunchSwing" />
+        </VBox>
+    </left>
+
+    <!-- Main Content Area -->
+    <center>
+        <VBox spacing="20">
+            <!-- Top Header Bar -->
+            <HBox styleClass="top-bar" alignment="CENTER_LEFT">
+                <VBox>
+                    <Label text="Coffee &amp; Books - JavaFX Dashboard" styleClass="top-bar-title" />
+                    <Label text="Gerenciamento Integrado de Cafeteria e Sebo" styleClass="top-bar-subtitle" />
+                </VBox>
+                <Spacer HBox.hgrow="ALWAYS" />
+                <Label text="Ambiente: Homologação" style="-fx-text-fill: #D4AF37; -fx-font-weight: bold; -fx-font-size: 13px;" />
+            </HBox>
+
+            <!-- Scrollable Content -->
+            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;" VBox.vgrow="ALWAYS">
+                <content>
+                    <VBox spacing="20" style="-fx-padding: 0 25px 25px 25px;">
+                        
+                        <!-- Dashboard Metric Cards Grid -->
+                        <GridPane hgap="20" vgap="20">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="25" />
+                                <ColumnConstraints percentWidth="25" />
+                                <ColumnConstraints percentWidth="25" />
+                                <ColumnConstraints percentWidth="25" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints />
+                            </rowConstraints>
+                            
+                            <!-- Card 1: Books in Stock -->
+                            <VBox styleClass="card" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Label text="Livros no Acervo" styleClass="card-title" />
+                                <Label fx:id="lblTotalBooks" text="--" styleClass="card-value" />
+                                <Label text="Obras registradas" style="-fx-font-size: 11px; -fx-text-fill: #8c8c8c;" />
+                            </VBox>
+                            
+                            <!-- Card 2: Food Menu Items -->
+                            <VBox styleClass="card" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Label text="Itens do Cardápio" styleClass="card-title" />
+                                <Label fx:id="lblTotalProducts" text="--" styleClass="card-value" />
+                                <Label text="Produtos de consumo" style="-fx-font-size: 11px; -fx-text-fill: #8c8c8c;" />
+                            </VBox>
+                            
+                            <!-- Card 3: Registered Suppliers -->
+                            <VBox styleClass="card" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                <Label text="Fornecedores" styleClass="card-title" />
+                                <Label fx:id="lblTotalSuppliers" text="--" styleClass="card-value" />
+                                <Label text="Parceiros logísticos" style="-fx-font-size: 11px; -fx-text-fill: #8c8c8c;" />
+                            </VBox>
+                            
+                            <!-- Card 4: Total Donations -->
+                            <VBox styleClass="card" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                                <Label text="Doações Recebidas" styleClass="card-title" />
+                                <Label fx:id="lblTotalDonations" text="--" styleClass="card-value" />
+                                <Label text="Campanha de sebo" style="-fx-font-size: 11px; -fx-text-fill: #8c8c8c;" />
+                            </VBox>
+                        </GridPane>
+
+                        <!-- Alerts and Lists Section -->
+                        <HBox spacing="20">
+                            <!-- Left Side: Alerts and Database Config -->
+                            <VBox spacing="20" HBox.hgrow="ALWAYS" prefWidth="400.0">
+                                <!-- Database Configuration Panel -->
+                                <VBox styleClass="list-container" spacing="10">
+                                    <Label text="🔌 Status da Conexão do Banco de Dados" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c1e18;" />
+                                    <Separator />
+                                    <GridPane vgap="8" hgap="10">
+                                        <columnConstraints>
+                                            <ColumnConstraints prefWidth="120" />
+                                            <ColumnConstraints hgrow="ALWAYS" />
+                                        </columnConstraints>
+                                        
+                                        <Label text="Database (Banco):" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight: bold; -fx-text-fill: #595959;" />
+                                        <Label fx:id="lblDbName" text="--" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                        
+                                        <Label text="Servidor / Porta:" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-font-weight: bold; -fx-text-fill: #595959;" />
+                                        <Label fx:id="lblDbHostPort" text="--" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                        
+                                        <Label text="Usuário Conectado:" GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-font-weight: bold; -fx-text-fill: #595959;" />
+                                        <Label fx:id="lblDbUser" text="--" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                        
+                                        <Label text="Status Conexão:" GridPane.columnIndex="0" GridPane.rowIndex="3" style="-fx-font-weight: bold; -fx-text-fill: #595959;" />
+                                        <Label fx:id="lblDbStatus" text="Consultando..." GridPane.columnIndex="1" GridPane.rowIndex="3" style="-fx-text-fill: #d48806; -fx-font-weight: bold;" />
+                                    </GridPane>
+                                    <HBox spacing="10" alignment="CENTER_RIGHT" style="-fx-padding: 10px 0 0 0;">
+                                        <Button text="Testar Conexão" styleClass="btn-secondary" onAction="#handleTestConnection" />
+                                        <Button text="Recarregar Dados" styleClass="btn-primary" onAction="#handleRefreshData" />
+                                    </HBox>
+                                </VBox>
+                                
+                                <!-- Low Stock Warnings -->
+                                <VBox styleClass="list-container" spacing="10" VBox.vgrow="ALWAYS">
+                                    <Label text="⚠️ Alertas de Estoque Baixo (Sebo)" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c1e18;" />
+                                    <Separator />
+                                    <ListView fx:id="lstLowStock" prefHeight="150.0" style="-fx-background-color: transparent; -fx-background-insets: 0;" />
+                                </VBox>
+                            </VBox>
+
+                            <!-- Right Side: Events and Schedule -->
+                            <VBox styleClass="list-container" spacing="10" HBox.hgrow="ALWAYS" prefWidth="400.0">
+                                <Label text="📅 Próximos Eventos Literários &amp; Workshops" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c1e18;" />
+                                <Separator />
+                                <ListView fx:id="lstEvents" prefHeight="300.0" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background-insets: 0;" />
+                            </VBox>
+                        </HBox>
+
+                    </VBox>
+                </content>
+            </ScrollPane>
+        </VBox>
+    </center>
+</BorderPane>

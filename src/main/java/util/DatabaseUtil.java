@@ -14,16 +14,72 @@ public class DatabaseUtil {
     private static final String PASSWORD = ""; // Adjust as needed
 
     public static Connection getConnection() throws SQLException {
+        return Banco.obterConexao();
+    }
+
+    private static void initializeDatabaseSchema(Connection conn) {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            return DriverManager.getConnection(URL, USER, PASSWORD);
-        } catch (ClassNotFoundException e) {
-            throw new SQLException("MySQL Driver not found.", e);
+            java.sql.DatabaseMetaData dbm = conn.getMetaData();
+            boolean tableExists = false;
+            try (ResultSet tables = dbm.getTables(null, null, "USUARIO", null)) {
+                if (tables.next()) {
+                    tableExists = true;
+                }
+            }
+            if (!tableExists) {
+                try (ResultSet tables = dbm.getTables(null, null, "usuario", null)) {
+                    if (tables.next()) {
+                        tableExists = true;
+                    }
+                }
+            }
+            
+            if (tableExists) {
+                return; // Schema already created
+            }
+
+            System.out.println("Tabelas principais nao encontradas. Inicializando banco de dados...");
+            
+            try (java.io.InputStream is = DatabaseUtil.class.getResourceAsStream("/database.sql")) {
+                if (is == null) {
+                    System.err.println("Erro: Arquivo '/database.sql' nao encontrado nos recursos!");
+                    return;
+                }
+                try (java.io.BufferedReader reader = new java.io.BufferedReader(
+                        new java.io.InputStreamReader(is, java.nio.charset.StandardCharsets.UTF_8))) {
+                    
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        String trimmed = line.trim();
+                        if (trimmed.startsWith("--") || trimmed.startsWith("#") || trimmed.isEmpty()) {
+                            continue;
+                        }
+                        sb.append(line).append("\n");
+                    }
+                    
+                    String[] statements = sb.toString().split(";");
+                    try (Statement stmt = conn.createStatement()) {
+                        for (String sql : statements) {
+                            String trimmedSql = sql.trim();
+                            if (!trimmedSql.isEmpty()) {
+                                stmt.execute(trimmedSql);
+                            }
+                        }
+                    }
+                    System.out.println("Banco de dados criado e populado com sucesso!");
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao inicializar esquema do banco de dados: " + e.getMessage());
+            e.printStackTrace();
         }
     }
+
     static {
         try (Connection conn = getConnection();
              java.sql.Statement stmt = conn.createStatement()) {
+            initializeDatabaseSchema(conn);
             java.sql.DatabaseMetaData meta = conn.getMetaData();
             
             // Migrate CLIENTE

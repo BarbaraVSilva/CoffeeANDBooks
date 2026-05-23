@@ -125,11 +125,13 @@ public class ListaEsperaFrame extends JFrame {
         btnPanel.setOpaque(false);
 
         JButton btnAdicionar = criarBotao("➕ Adicionar", UIConstants.COLOR_SUCCESS);
+        JButton btnAlterar   = criarBotao("✏️ Alterar", UIConstants.COLOR_ACCENT());
         JButton btnChamar   = criarBotao("📣 Chamar Próximo", new Color(30, 100, 200));
         JButton btnRemover  = criarBotao("🗑 Remover", UIConstants.COLOR_ALERT);
         JButton btnLimpar   = criarBotao("🔄 Limpar", UIConstants.COLOR_ACCENT().darker());
 
         btnPanel.add(btnAdicionar);
+        btnPanel.add(btnAlterar);
         btnPanel.add(btnChamar);
         btnPanel.add(btnRemover);
         btnPanel.add(btnLimpar);
@@ -230,6 +232,7 @@ public class ListaEsperaFrame extends JFrame {
 
         // ── ACTION LISTENERS ─────────────────────────────────────────────────────
         btnAdicionar.addActionListener(e -> adicionarNaFila());
+        btnAlterar.addActionListener(e -> alterarNaFila());
         btnChamar.addActionListener(e -> chamarProximo());
         btnRemover.addActionListener(e -> removerSelecionado());
         btnLimpar.addActionListener(e -> limparFormulario());
@@ -376,6 +379,57 @@ public class ListaEsperaFrame extends JFrame {
     private void atualizarSummary() {
         lblTotal.setText("Total na fila: " + listaEspera.size() + " clientes");
         lblTempoMedio.setText("ArrayList.size() = " + listaEspera.size());
+    }
+
+    private void alterarNaFila() {
+        int row = tabela.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Selecione um cliente na tabela para alterar.", "Nenhuma Seleção", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String idAlvo = tableModel.getValueAt(row, 0).toString();
+        String nome = txtNome.getText().trim();
+        String telefone = txtTelefone.getText().trim();
+        String pessoasStr = txtMesa.getText().trim();
+        String prioridade = (String) cbPrioridade.getSelectedItem();
+        String ambiente = (String) cbAmbiente.getSelectedItem();
+
+        if (nome.isEmpty() || telefone.isEmpty() || pessoasStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "Por favor, preencha todos os campos:\n• Nome\n• Telefone\n• Nº de Pessoas",
+                "Campos Obrigatórios", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            int pessoas = Integer.parseInt(pessoasStr);
+            if (pessoas < 1 || pessoas > 20) {
+                JOptionPane.showMessageDialog(this, "Número de pessoas deve estar entre 1 e 20.", "Valor Inválido", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Achar o item na collection ArrayList e atualizar
+            for (Map<String, String> item : listaEspera) {
+                if (item.get("id").equals(idAlvo)) {
+                    item.put("nome", nome);
+                    item.put("telefone", telefone);
+                    item.put("pessoas", String.valueOf(pessoas));
+                    item.put("prioridade", prioridade);
+                    item.put("ambiente", ambiente);
+                    break;
+                }
+            }
+
+            atualizarTabela();
+            limparFormulario();
+            JOptionPane.showMessageDialog(this,
+                "✅ Cadastro alterado na coleção de memória com sucesso!",
+                "Alterado", JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Número de pessoas deve ser um valor inteiro.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void limparFormulario() {
