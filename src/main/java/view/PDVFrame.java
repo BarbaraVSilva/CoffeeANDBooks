@@ -98,9 +98,9 @@ public class PDVFrame extends JFrame {
             if (lower.contains("quente")) {
                 tabTitle = "☕ " + cat;
             } else if (lower.contains("fria") || lower.contains("fia")) {
-                tabTitle = "🥤 " + cat;
+                tabTitle = "🍹 " + cat;
             } else if (lower.contains("salgado")) {
-                tabTitle = "🥪 " + cat;
+                tabTitle = "🍞 " + cat;
             } else if (lower.contains("doce")) {
                 tabTitle = "🍰 " + cat;
             } else {
@@ -299,8 +299,8 @@ public class PDVFrame extends JFrame {
         if (category == null) return "🍽️";
         String lower = category.toLowerCase();
         if (lower.contains("quente")) return "☕";
-        if (lower.contains("fria") || lower.contains("fia")) return "🥤";
-        if (lower.contains("salgado")) return "🥪";
+        if (lower.contains("fria") || lower.contains("fia")) return "🍹";
+        if (lower.contains("salgado")) return "🍞";
         if (lower.contains("doce")) return "🍰";
         return "🍽️";
     }
