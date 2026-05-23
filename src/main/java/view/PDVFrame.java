@@ -211,7 +211,7 @@ public class PDVFrame extends JFrame {
         List<ProdutoConsumo> produtos = new ProdutoConsumoDAO().listar();
         for (ProdutoConsumo prod : produtos) {
             if (prod.getCategoriaCardapio().equalsIgnoreCase(categoria) && prod.isDisponivel()) {
-                JButton btn = createProductButton(prod.getNomeAlimento(), prod.getPrecoUnitario(), prod.getImagePath(), e -> adicionarAoCarrinho(prod));
+                JButton btn = createProductButton(prod.getNomeAlimento(), prod.getPrecoUnitario(), prod.getImagePath(), getEmojiForCategory(prod.getCategoriaCardapio()), e -> adicionarAoCarrinho(prod));
                 p.add(btn);
             }
         }
@@ -224,13 +224,13 @@ public class PDVFrame extends JFrame {
         
         List<Livro> livros = new LivroDAO().listar(null, "Todos");
         for (Livro l : livros) {
-            JButton btn = createProductButton(l.getTitulo(), l.getPrecoVenda(), l.getImagePath(), e -> adicionarAoCarrinho(l));
+            JButton btn = createProductButton(l.getTitulo(), l.getPrecoVenda(), l.getImagePath(), "📚", e -> adicionarAoCarrinho(l));
             p.add(btn);
         }
         return p;
     }
 
-    private JButton createProductButton(String name, double price, String imagePath, java.awt.event.ActionListener action) {
+    private JButton createProductButton(String name, double price, String imagePath, String defaultEmoji, java.awt.event.ActionListener action) {
         JButton btn = new JButton();
         btn.setLayout(new BorderLayout());
         btn.setPreferredSize(new Dimension(150, 150));
@@ -240,16 +240,18 @@ public class PDVFrame extends JFrame {
         // Attempt to load image
         JLabel lblImg = new JLabel();
         lblImg.setHorizontalAlignment(SwingConstants.CENTER);
-        if (imagePath != null && !imagePath.isEmpty()) {
+        if (imagePath != null && !imagePath.isEmpty() && new java.io.File(imagePath).exists()) {
             try {
                 ImageIcon icon = new ImageIcon(imagePath);
                 Image img = icon.getImage().getScaledInstance(140, 80, Image.SCALE_SMOOTH);
                 lblImg.setIcon(new ImageIcon(img));
             } catch (Exception ex) {
-                lblImg.setText("🖼️");
+                lblImg.setText(defaultEmoji);
+                lblImg.setFont(new Font("SansSerif", Font.PLAIN, 48));
             }
         } else {
-            lblImg.setText("🖼️");
+            lblImg.setText(defaultEmoji);
+            lblImg.setFont(new Font("SansSerif", Font.PLAIN, 48));
         }
 
         JLabel lblInfo = new JLabel("<html><center><b>" + name + "</b><br><font color='green'>R$ " + String.format("%.2f", price) + "</font></center></html>", SwingConstants.CENTER);
@@ -260,6 +262,16 @@ public class PDVFrame extends JFrame {
         btn.addActionListener(action);
 
         return btn;
+    }
+
+    private String getEmojiForCategory(String category) {
+        if (category == null) return "🍽️";
+        String lower = category.toLowerCase();
+        if (lower.contains("quente")) return "☕";
+        if (lower.contains("fria") || lower.contains("fia")) return "🥤";
+        if (lower.contains("salgado")) return "🥪";
+        if (lower.contains("doce")) return "🍰";
+        return "🍽️";
     }
 
     private void filtrar() {
@@ -273,7 +285,7 @@ public class PDVFrame extends JFrame {
             List<ProdutoConsumo> produtos = new ProdutoConsumoDAO().listar();
             for (ProdutoConsumo p : produtos) {
                 if (p.getNomeAlimento().toLowerCase().contains(text.toLowerCase()) && p.isDisponivel()) {
-                    JButton btn = createProductButton(p.getNomeAlimento(), p.getPrecoUnitario(), p.getImagePath(), e -> adicionarAoCarrinho(p));
+                    JButton btn = createProductButton(p.getNomeAlimento(), p.getPrecoUnitario(), p.getImagePath(), getEmojiForCategory(p.getCategoriaCardapio()), e -> adicionarAoCarrinho(p));
                     searchResultPanel.add(btn);
                 }
             }
@@ -281,7 +293,7 @@ public class PDVFrame extends JFrame {
             // Search Books
             List<Livro> livros = new LivroDAO().listar(text, "Todos");
             for (Livro l : livros) {
-                JButton btn = createProductButton(l.getTitulo(), l.getPrecoVenda(), l.getImagePath(), e -> adicionarAoCarrinho(l));
+                JButton btn = createProductButton(l.getTitulo(), l.getPrecoVenda(), l.getImagePath(), "📚", e -> adicionarAoCarrinho(l));
                 searchResultPanel.add(btn);
             }
 

@@ -225,7 +225,11 @@ public class DatabaseUtil {
                                        "('Grãos de Café (Espresso)', 5000.0, 'g'), " +
                                        "('Leite Integral', 10000.0, 'ml'), " +
                                        "('Chocolate em Pó', 3000.0, 'g'), " +
-                                       "('Copos Descartáveis', 500.0, 'un')");
+                                       "('Copos Descartáveis', 500.0, 'un'), " +
+                                       "('Canela em Pó', 1000.0, 'g'), " +
+                                       "('Essência de Baunilha', 500.0, 'ml'), " +
+                                       "('Chá Verde Folhas', 1000.0, 'g'), " +
+                                       "('Limão (Suco)', 2000.0, 'ml')");
                 }
             }
 

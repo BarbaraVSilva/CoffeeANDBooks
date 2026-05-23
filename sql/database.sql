@@ -68,7 +68,12 @@ INSERT INTO LIVRO (titulo, autor, condicao_livro, preco_venda, estoque_atual, fk
 ('O Iluminado', 'Stephen King', 'Novo', 65.00, 8, 2),
 ('Dom Casmurro', 'Machado de Assis', 'Usado (Marcas de Tempo)', 15.00, 0, 3), -- Alerta Vermelho
 ('A República', 'Platão', 'Novo', 42.00, 1, 4), -- Alerta Amarelo
-('O Pequeno Príncipe', 'Antoine de Saint-Exupéry', 'Novo', 35.00, 20, 3);
+('O Pequeno Príncipe', 'Antoine de Saint-Exupéry', 'Novo', 35.00, 20, 3),
+('1984', 'George Orwell', 'Novo', 49.90, 10, 1),
+('Cem Anos de Solidão', 'Gabriel García Márquez', 'Novo', 75.00, 5, 4),
+('Sherlock Holmes: Estudo em Vermelho', 'Arthur Conan Doyle', 'Usado (Excelente)', 25.00, 3, 2),
+('O Hobbit', 'J.R.R. Tolkien', 'Novo', 59.90, 8, 1),
+('O Cortiço', 'Aluísio Azevedo', 'Usado (Marcas de Tempo)', 12.50, 4, 3);
 
 -- Seed Data: PRODUTO_CONSUMO (Literary Themes)
 INSERT INTO PRODUTO_CONSUMO (nome_alimento, preco_unitario, categoria_cardapio) VALUES 
@@ -77,7 +82,13 @@ INSERT INTO PRODUTO_CONSUMO (nome_alimento, preco_unitario, categoria_cardapio) 
 ('Pão de Queijo da Vila', 5.50, 'Salgados'),
 ('Torta Red Velvet "Duna"', 18.00, 'Doces'),
 ('Suco Natural "Laranja Mecânica"', 9.50, 'Bebidas Frias'),
-('Sanduíche "Metamorfose"', 22.00, 'Salgados');
+('Sanduíche "Metamorfose"', 22.00, 'Salgados'),
+('Croissant Baudelaire', 9.50, 'Salgados'),
+('Empada Edgar Allan Poe', 8.00, 'Salgados'),
+('Cold Brew Orwell', 11.50, 'Bebidas Frias'),
+('Soda Italiana Poe', 10.00, 'Bebidas Frias'),
+('Torta de Limão Virginia Woolf', 15.00, 'Doces'),
+('Brownie Bukowski', 12.00, 'Doces');
 
 -- Table: USUARIO
 CREATE TABLE IF NOT EXISTS USUARIO (

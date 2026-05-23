@@ -233,7 +233,7 @@ public class MainFrame extends JFrame {
     private void addNavButton(JPanel panel, String text, java.awt.event.ActionListener action) {
         JButton btn = new JButton(text);
         btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
-        btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btn.setAlignmentX(Component.LEFT_ALIGNMENT);
         btn.setBackground(UIConstants.COLOR_ACCENT().darker());
         btn.setForeground(Color.WHITE);
         btn.setFocusPainted(false);

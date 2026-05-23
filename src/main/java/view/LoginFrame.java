@@ -49,6 +49,7 @@ public class LoginFrame extends JFrame {
         panel.add(btnLogin, gbc);
 
         add(panel, BorderLayout.CENTER);
+        getRootPane().setDefaultButton(btnLogin);
 
         btnLogin.addActionListener(e -> {
             UsuarioDAO dao = new UsuarioDAO();
