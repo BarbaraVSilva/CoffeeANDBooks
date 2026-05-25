@@ -289,14 +289,16 @@ public class DatabaseUtil {
                 if (!rsLivroLower.next()) {
                     try {
                         stmt.executeUpdate("ALTER TABLE LIVRO ADD COLUMN fk_editora INT NULL, ADD FOREIGN KEY (fk_editora) REFERENCES EDITORA(id_editora)");
-                        stmt.executeUpdate("UPDATE LIVRO SET fk_editora = 4 WHERE id_livro IN (1, 2)");
-                        stmt.executeUpdate("UPDATE LIVRO SET fk_editora = 3 WHERE id_livro = 3");
-                        stmt.executeUpdate("UPDATE LIVRO SET fk_editora = 1 WHERE id_livro IN (4, 5, 7, 11)");
-                        stmt.executeUpdate("UPDATE LIVRO SET fk_editora = 2 WHERE id_livro IN (6, 8, 9, 10)");
                     } catch (Exception ex) {
-                        System.err.println("Erro ao migrar LIVRO: " + ex.getMessage());
+                        System.err.println("Aviso ao adicionar coluna fk_editora: " + ex.getMessage());
                     }
                 }
+            }
+            try {
+                stmt.executeUpdate("UPDATE LIVRO SET fk_editora = 1 WHERE id_livro % 2 = 0 AND fk_editora IS NULL");
+                stmt.executeUpdate("UPDATE LIVRO SET fk_editora = 2 WHERE id_livro % 2 = 1 AND fk_editora IS NULL");
+            } catch (Exception ex) {
+                System.err.println("Erro ao atualizar fk_editora em LIVRO: " + ex.getMessage());
             }
 
             // Migrate INGREDIENTE to add fk_fornecedor
@@ -306,13 +308,16 @@ public class DatabaseUtil {
                 if (!rsIngFLower.next()) {
                     try {
                         stmt.executeUpdate("ALTER TABLE INGREDIENTE ADD COLUMN fk_fornecedor INT NULL, ADD FOREIGN KEY (fk_fornecedor) REFERENCES FORNECEDOR(id_fornecedor)");
-                        stmt.executeUpdate("UPDATE INGREDIENTE SET fk_fornecedor = 1 WHERE nome_ingrediente LIKE '%Café%'");
-                        stmt.executeUpdate("UPDATE INGREDIENTE SET fk_fornecedor = 2 WHERE nome_ingrediente LIKE '%Leite%' OR nome_ingrediente LIKE '%Chocolate%'");
-                        stmt.executeUpdate("UPDATE INGREDIENTE SET fk_fornecedor = 3 WHERE nome_ingrediente LIKE '%Copo%'");
                     } catch (Exception ex) {
-                        System.err.println("Erro ao migrar INGREDIENTE: " + ex.getMessage());
+                        System.err.println("Aviso ao adicionar coluna fk_fornecedor em INGREDIENTE: " + ex.getMessage());
                     }
                 }
+            }
+            try {
+                stmt.executeUpdate("UPDATE INGREDIENTE SET fk_fornecedor = 1 WHERE (nome_ingrediente LIKE '%Café%' OR nome_ingrediente LIKE '%Chá%') AND fk_fornecedor IS NULL");
+                stmt.executeUpdate("UPDATE INGREDIENTE SET fk_fornecedor = 2 WHERE (nome_ingrediente LIKE '%Leite%' OR nome_ingrediente LIKE '%Chocolate%' OR nome_ingrediente LIKE '%Limão%' OR nome_ingrediente LIKE '%Canela%' OR nome_ingrediente LIKE '%Baunilha%' OR nome_ingrediente LIKE '%Copo%') AND fk_fornecedor IS NULL");
+            } catch (Exception ex) {
+                System.err.println("Erro ao atualizar fk_fornecedor em INGREDIENTE: " + ex.getMessage());
             }
 
             // Migrate PRODUTO_CONSUMO to add fk_fornecedor
@@ -322,12 +327,16 @@ public class DatabaseUtil {
                 if (!rsPCLower.next()) {
                     try {
                         stmt.executeUpdate("ALTER TABLE PRODUTO_CONSUMO ADD COLUMN fk_fornecedor INT NULL, ADD FOREIGN KEY (fk_fornecedor) REFERENCES FORNECEDOR(id_fornecedor)");
-                        stmt.executeUpdate("UPDATE PRODUTO_CONSUMO SET fk_fornecedor = 1 WHERE categoria_cardapio = 'Bebidas Quentes' OR categoria_cardapio = 'Bebidas Frias'");
-                        stmt.executeUpdate("UPDATE PRODUTO_CONSUMO SET fk_fornecedor = 2 WHERE categoria_cardapio = 'Salgados' OR categoria_cardapio = 'Doces'");
                     } catch (Exception ex) {
-                        System.err.println("Erro ao migrar PRODUTO_CONSUMO: " + ex.getMessage());
+                        System.err.println("Aviso ao adicionar coluna fk_fornecedor em PRODUTO_CONSUMO: " + ex.getMessage());
                     }
                 }
+            }
+            try {
+                stmt.executeUpdate("UPDATE PRODUTO_CONSUMO SET fk_fornecedor = 1 WHERE (categoria_cardapio = 'Bebidas Quentes' OR categoria_cardapio = 'Bebidas Frias') AND fk_fornecedor IS NULL");
+                stmt.executeUpdate("UPDATE PRODUTO_CONSUMO SET fk_fornecedor = 2 WHERE (categoria_cardapio = 'Salgados' OR categoria_cardapio = 'Doces') AND fk_fornecedor IS NULL");
+            } catch (Exception ex) {
+                System.err.println("Erro ao atualizar fk_fornecedor em PRODUTO_CONSUMO: " + ex.getMessage());
             }
 
             // Migrate VENDA_CONSOLIDADA to add fk_cliente
@@ -337,12 +346,16 @@ public class DatabaseUtil {
                 if (!rsVCLower.next()) {
                     try {
                         stmt.executeUpdate("ALTER TABLE VENDA_CONSOLIDADA ADD COLUMN fk_cliente INT NULL, ADD FOREIGN KEY (fk_cliente) REFERENCES CLIENTE(id_cliente)");
-                        stmt.executeUpdate("UPDATE VENDA_CONSOLIDADA SET fk_cliente = 1 WHERE id_venda % 3 = 1");
-                        stmt.executeUpdate("UPDATE VENDA_CONSOLIDADA SET fk_cliente = 2 WHERE id_venda % 3 = 2");
                     } catch (Exception ex) {
-                        System.err.println("Erro ao migrar VENDA_CONSOLIDADA: " + ex.getMessage());
+                        System.err.println("Aviso ao adicionar coluna fk_cliente em VENDA_CONSOLIDADA: " + ex.getMessage());
                     }
                 }
+            }
+            try {
+                stmt.executeUpdate("UPDATE VENDA_CONSOLIDADA SET fk_cliente = 1 WHERE id_venda % 3 = 1 AND fk_cliente IS NULL");
+                stmt.executeUpdate("UPDATE VENDA_CONSOLIDADA SET fk_cliente = 2 WHERE id_venda % 3 = 2 AND fk_cliente IS NULL");
+            } catch (Exception ex) {
+                System.err.println("Erro ao atualizar fk_cliente em VENDA_CONSOLIDADA: " + ex.getMessage());
             }
 
             // Migrate and Create FICHA_TECNICA
