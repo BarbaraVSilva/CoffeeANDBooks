@@ -557,22 +557,24 @@ Exceções personalizadas no pacote `exception` para consistência e regras de n
 
 ---
 
-## 🗄️ 19. Estrutura de Banco de Dados (12 Tabelas)
+## 🗄️ 19. Estrutura de Banco de Dados (14 Tabelas)
 
 ```sql
 -- Principais tabelas mapeadas no script database.sql:
 GENERO_LIVRO (id_genero, nome_genero, localizacao_estante)
-LIVRO (id_livro, titulo, autor, condicao_livro, preco_venda, estoque_atual, fk_genero, image_path)
-PRODUTO_CONSUMO (id_produto, nome_alimento, preco_unitario, categoria_cardapio, disponivel, image_path)
-CLIENTE (id_cliente, nome, cpf, email, telefone, pontos_fidelidade, data_nascimento)
-VENDA_CONSOLIDADA (id_venda, data_venda, valor_total, forma_pagamento, numero_mesa)
-ITEM_VENDA_GERAL (id_item, quantidade, preco_applied, fk_venda, fk_livro, fk_produto)
-INGREDIENTE (id_ingrediente, nome_ingrediente, quantidade_atual, unidade_medida)
-USUARIO (id_usuario, username, password, role, data_ultima_senha)
-DOACAO (id_doacao, nome_doador, data_doacao, fk_livro)
 EDITORA (id_editora, nome_editora, cidade)
 FORNECEDOR (id_fornecedor, nome_fantasia, cnpj, contato, tipo_produto)
+CLIENTE (id_cliente, nome, cpf, email, telefone, pontos_fidelidade, data_nascimento)
+LIVRO (id_livro, titulo, autor, condicao_livro, preco_venda, estoque_atual, fk_genero, fk_editora, image_path)
+PRODUTO_CONSUMO (id_produto, nome_alimento, preco_unitario, categoria_cardapio, disponivel, fk_fornecedor, image_path)
+INGREDIENTE (id_ingrediente, nome_ingrediente, quantidade_atual, unidade_medida, fk_fornecedor)
+VENDA_CONSOLIDADA (id_venda, data_venda, valor_total, forma_pagamento, numero_mesa, fk_cliente)
+ITEM_VENDA_GERAL (id_item, quantidade, preco_applied, fk_venda, fk_livro, fk_produto)
+DOACAO (id_doacao, nome_doador, data_doacao, fk_livro)
+USUARIO (id_usuario, username, password, role, data_ultima_senha)
 EVENTO (id_evento, nome_evento, data_evento, tipo_evento, descricao)
+FICHA_TECNICA (id_ficha, fk_produto, fk_ingrediente, quantidade_necessaria)
+PARTICIPACAO_EVENTO (id_participacao, fk_evento, fk_cliente, data_inscricao)
 ```
 
 ---
@@ -583,23 +585,33 @@ EVENTO (id_evento, nome_evento, data_evento, tipo_evento, descricao)
 classDiagram
     direction LR
     class GENERO_LIVRO { +int id_genero (PK) }
-    class LIVRO { +int id_livro (PK) +int fk_genero (FK) }
-    class PRODUTO_CONSUMO { +int id_produto (PK) }
-    class INGREDIENTE { +int id_ingrediente (PK) }
-    class USUARIO { +int id_usuario (PK) }
+    class EDITORA { +int id_editora (PK) }
     class FORNECEDOR { +int id_fornecedor (PK) }
     class CLIENTE { +int id_cliente (PK) }
-    class VENDA_CONSOLIDADA { +int id_venda (PK) }
+    class LIVRO { +int id_livro (PK) +int fk_genero (FK) +int fk_editora (FK) }
+    class PRODUTO_CONSUMO { +int id_produto (PK) +int fk_fornecedor (FK) }
+    class INGREDIENTE { +int id_ingrediente (PK) +int fk_fornecedor (FK) }
+    class VENDA_CONSOLIDADA { +int id_venda (PK) +int fk_cliente (FK) }
     class ITEM_VENDA_GERAL { +int id_item (PK) +int fk_venda (FK) +int fk_livro (FK) +int fk_produto (FK) }
-    class EDITORA { +int id_editora (PK) }
-    class EVENTO { +int id_evento (PK) }
     class DOACAO { +int id_doacao (PK) +int fk_livro (FK) }
+    class USUARIO { +int id_usuario (PK) }
+    class EVENTO { +int id_evento (PK) }
+    class FICHA_TECNICA { +int id_ficha (PK) +int fk_produto (FK) +int fk_ingrediente (FK) }
+    class PARTICIPACAO_EVENTO { +int id_participacao (PK) +int fk_evento (FK) +int fk_cliente (FK) }
 
     LIVRO --> GENERO_LIVRO : fk_genero
+    LIVRO --> EDITORA : fk_editora
+    INGREDIENTE --> FORNECEDOR : fk_fornecedor
+    PRODUTO_CONSUMO --> FORNECEDOR : fk_fornecedor
+    VENDA_CONSOLIDADA --> CLIENTE : fk_cliente
     ITEM_VENDA_GERAL --> VENDA_CONSOLIDADA : fk_venda
     ITEM_VENDA_GERAL --> LIVRO : fk_livro
     ITEM_VENDA_GERAL --> PRODUTO_CONSUMO : fk_produto
     DOACAO --> LIVRO : fk_livro
+    FICHA_TECNICA --> PRODUTO_CONSUMO : fk_produto
+    FICHA_TECNICA --> INGREDIENTE : fk_ingrediente
+    PARTICIPACAO_EVENTO --> EVENTO : fk_evento
+    PARTICIPACAO_EVENTO --> CLIENTE : fk_cliente
 ```
 
 ---

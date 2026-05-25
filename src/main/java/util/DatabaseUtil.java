@@ -281,7 +281,130 @@ public class DatabaseUtil {
                                        "('Limão (Suco)', 2000.0, 'ml')");
                 }
             }
+            
+            // Migrate LIVRO to add fk_editora
+            java.sql.ResultSet rsLivro = meta.getColumns(null, null, "LIVRO", "fk_editora");
+            if (!rsLivro.next()) {
+                java.sql.ResultSet rsLivroLower = meta.getColumns(null, null, "livro", "fk_editora");
+                if (!rsLivroLower.next()) {
+                    try {
+                        stmt.executeUpdate("ALTER TABLE LIVRO ADD COLUMN fk_editora INT NULL, ADD FOREIGN KEY (fk_editora) REFERENCES EDITORA(id_editora)");
+                        stmt.executeUpdate("UPDATE LIVRO SET fk_editora = 4 WHERE id_livro IN (1, 2)");
+                        stmt.executeUpdate("UPDATE LIVRO SET fk_editora = 3 WHERE id_livro = 3");
+                        stmt.executeUpdate("UPDATE LIVRO SET fk_editora = 1 WHERE id_livro IN (4, 5, 7, 11)");
+                        stmt.executeUpdate("UPDATE LIVRO SET fk_editora = 2 WHERE id_livro IN (6, 8, 9, 10)");
+                    } catch (Exception ex) {
+                        System.err.println("Erro ao migrar LIVRO: " + ex.getMessage());
+                    }
+                }
+            }
 
+            // Migrate INGREDIENTE to add fk_fornecedor
+            java.sql.ResultSet rsIngF = meta.getColumns(null, null, "INGREDIENTE", "fk_fornecedor");
+            if (!rsIngF.next()) {
+                java.sql.ResultSet rsIngFLower = meta.getColumns(null, null, "ingrediente", "fk_fornecedor");
+                if (!rsIngFLower.next()) {
+                    try {
+                        stmt.executeUpdate("ALTER TABLE INGREDIENTE ADD COLUMN fk_fornecedor INT NULL, ADD FOREIGN KEY (fk_fornecedor) REFERENCES FORNECEDOR(id_fornecedor)");
+                        stmt.executeUpdate("UPDATE INGREDIENTE SET fk_fornecedor = 1 WHERE nome_ingrediente LIKE '%Café%'");
+                        stmt.executeUpdate("UPDATE INGREDIENTE SET fk_fornecedor = 2 WHERE nome_ingrediente LIKE '%Leite%' OR nome_ingrediente LIKE '%Chocolate%'");
+                        stmt.executeUpdate("UPDATE INGREDIENTE SET fk_fornecedor = 3 WHERE nome_ingrediente LIKE '%Copo%'");
+                    } catch (Exception ex) {
+                        System.err.println("Erro ao migrar INGREDIENTE: " + ex.getMessage());
+                    }
+                }
+            }
+
+            // Migrate PRODUTO_CONSUMO to add fk_fornecedor
+            java.sql.ResultSet rsPC = meta.getColumns(null, null, "PRODUTO_CONSUMO", "fk_fornecedor");
+            if (!rsPC.next()) {
+                java.sql.ResultSet rsPCLower = meta.getColumns(null, null, "produto_consumo", "fk_fornecedor");
+                if (!rsPCLower.next()) {
+                    try {
+                        stmt.executeUpdate("ALTER TABLE PRODUTO_CONSUMO ADD COLUMN fk_fornecedor INT NULL, ADD FOREIGN KEY (fk_fornecedor) REFERENCES FORNECEDOR(id_fornecedor)");
+                        stmt.executeUpdate("UPDATE PRODUTO_CONSUMO SET fk_fornecedor = 1 WHERE categoria_cardapio = 'Bebidas Quentes' OR categoria_cardapio = 'Bebidas Frias'");
+                        stmt.executeUpdate("UPDATE PRODUTO_CONSUMO SET fk_fornecedor = 2 WHERE categoria_cardapio = 'Salgados' OR categoria_cardapio = 'Doces'");
+                    } catch (Exception ex) {
+                        System.err.println("Erro ao migrar PRODUTO_CONSUMO: " + ex.getMessage());
+                    }
+                }
+            }
+
+            // Migrate VENDA_CONSOLIDADA to add fk_cliente
+            java.sql.ResultSet rsVC = meta.getColumns(null, null, "VENDA_CONSOLIDADA", "fk_cliente");
+            if (!rsVC.next()) {
+                java.sql.ResultSet rsVCLower = meta.getColumns(null, null, "venda_consolidada", "fk_cliente");
+                if (!rsVCLower.next()) {
+                    try {
+                        stmt.executeUpdate("ALTER TABLE VENDA_CONSOLIDADA ADD COLUMN fk_cliente INT NULL, ADD FOREIGN KEY (fk_cliente) REFERENCES CLIENTE(id_cliente)");
+                        stmt.executeUpdate("UPDATE VENDA_CONSOLIDADA SET fk_cliente = 1 WHERE id_venda % 3 = 1");
+                        stmt.executeUpdate("UPDATE VENDA_CONSOLIDADA SET fk_cliente = 2 WHERE id_venda % 3 = 2");
+                    } catch (Exception ex) {
+                        System.err.println("Erro ao migrar VENDA_CONSOLIDADA: " + ex.getMessage());
+                    }
+                }
+            }
+
+            // Migrate and Create FICHA_TECNICA
+            boolean tableFichaExists = false;
+            try (java.sql.ResultSet tables = meta.getTables(null, null, "FICHA_TECNICA", null)) {
+                if (tables.next()) tableFichaExists = true;
+            }
+            if (!tableFichaExists) {
+                try (java.sql.ResultSet tables = meta.getTables(null, null, "ficha_tecnica", null)) {
+                    if (tables.next()) tableFichaExists = true;
+                }
+            }
+            if (!tableFichaExists) {
+                try {
+                    stmt.executeUpdate("CREATE TABLE FICHA_TECNICA (" +
+                                       "id_ficha INT AUTO_INCREMENT PRIMARY KEY, " +
+                                       "fk_produto INT NOT NULL, " +
+                                       "fk_ingrediente INT NOT NULL, " +
+                                       "quantidade_necessaria DOUBLE NOT NULL, " +
+                                       "FOREIGN KEY (fk_produto) REFERENCES PRODUTO_CONSUMO(id_produto) ON DELETE CASCADE, " +
+                                       "FOREIGN KEY (fk_ingrediente) REFERENCES INGREDIENTE(id_ingrediente))");
+                                       
+                    stmt.executeUpdate("INSERT INTO FICHA_TECNICA (fk_produto, fk_ingrediente, quantidade_necessaria) VALUES " +
+                                       "(1, 1, 15.0), " +
+                                       "(1, 2, 150.0), " +
+                                       "(1, 3, 30.0), " +
+                                       "(1, 4, 1.0), " +
+                                       "(2, 1, 15.0), " +
+                                       "(2, 2, 200.0), " +
+                                       "(2, 4, 1.0)");
+                } catch (Exception ex) {
+                    System.err.println("Erro ao criar FICHA_TECNICA: " + ex.getMessage());
+                }
+            }
+
+            // Migrate and Create PARTICIPACAO_EVENTO
+            boolean tablePartExists = false;
+            try (java.sql.ResultSet tables = meta.getTables(null, null, "PARTICIPACAO_EVENTO", null)) {
+                if (tables.next()) tablePartExists = true;
+            }
+            if (!tablePartExists) {
+                try (java.sql.ResultSet tables = meta.getTables(null, null, "participacao_evento", null)) {
+                    if (tables.next()) tablePartExists = true;
+                }
+            }
+            if (!tablePartExists) {
+                try {
+                    stmt.executeUpdate("CREATE TABLE PARTICIPACAO_EVENTO (" +
+                                       "id_participacao INT AUTO_INCREMENT PRIMARY KEY, " +
+                                       "fk_evento INT NOT NULL, " +
+                                       "fk_cliente INT NOT NULL, " +
+                                       "data_inscricao DATETIME DEFAULT CURRENT_TIMESTAMP, " +
+                                       "FOREIGN KEY (fk_evento) REFERENCES EVENTO(id_evento) ON DELETE CASCADE, " +
+                                       "FOREIGN KEY (fk_cliente) REFERENCES CLIENTE(id_cliente) ON DELETE CASCADE)");
+                                       
+                    stmt.executeUpdate("INSERT INTO PARTICIPACAO_EVENTO (fk_evento, fk_cliente) VALUES " +
+                                       "(1, 1), (1, 2), (2, 3), (2, 4), (3, 1), (3, 5)");
+                } catch (Exception ex) {
+                    System.err.println("Erro ao criar PARTICIPACAO_EVENTO: " + ex.getMessage());
+                }
+            }
+            
             // Seed sample sales over the last 12 days if empty
             try (java.sql.ResultSet rsV = stmt.executeQuery("SELECT COUNT(*) FROM VENDA_CONSOLIDADA")) {
                 if (rsV.next() && rsV.getInt(1) == 0) {

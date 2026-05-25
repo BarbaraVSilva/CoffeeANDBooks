@@ -23,55 +23,30 @@ A modelagem do banco de dados relacional `coffeebooks_db` é robusta, composta p
 ```mermaid
 erDiagram
     GENERO_LIVRO ||--o{ LIVRO : "possui"
+    EDITORA ||--o{ LIVRO : "publica"
+    FORNECEDOR ||--o{ INGREDIENTE : "fornece"
+    FORNECEDOR ||--o{ PRODUTO_CONSUMO : "fornece"
+    CLIENTE ||--o{ VENDA_CONSOLIDADA : "realiza"
     LIVRO ||--o{ DOACAO : "recebe"
     LIVRO ||--o{ ITEM_VENDA_GERAL : "item_de"
     PRODUTO_CONSUMO ||--o{ ITEM_VENDA_GERAL : "item_de"
     VENDA_CONSOLIDADA ||--o{ ITEM_VENDA_GERAL : "contem"
+    
+    PRODUTO_CONSUMO ||--o{ FICHA_TECNICA : "contem"
+    INGREDIENTE ||--o{ FICHA_TECNICA : "usado_em"
+    
+    EVENTO ||--o{ PARTICIPACAO_EVENTO : "registra"
+    CLIENTE ||--o{ PARTICIPACAO_EVENTO : "participa"
     
     GENERO_LIVRO {
         int id_genero PK
         string nome_genero
         string localizacao_estante
     }
-    LIVRO {
-        int id_livro PK
-        string titulo
-        string autor
-        string condicao_livro
-        decimal preco_venda
-        int estoque_atual
-        int fk_genero FK
-        string image_path
-    }
-    PRODUTO_CONSUMO {
-        int id_produto PK
-        string nome_alimento
-        decimal preco_unitario
-        string categoria_cardapio
-        boolean disponivel
-        string image_path
-    }
-    VENDA_CONSOLIDADA {
-        int id_venda PK
-        datetime data_venda
-        decimal valor_total
-        string forma_pagamento
-        int numero_mesa
-    }
-    ITEM_VENDA_GERAL {
-        int id_item PK
-        int quantidade
-        decimal preco_applied
-        int fk_venda FK
-        int fk_livro FK
-        int fk_produto FK
-    }
-    USUARIO {
-        int id_usuario PK
-        string username
-        string password
-        string role
-        date data_ultima_senha
+    EDITORA {
+        int id_editora PK
+        string nome_editora
+        string cidade
     }
     FORNECEDOR {
         int id_fornecedor PK
@@ -79,24 +54,6 @@ erDiagram
         string cnpj
         string contato
         string tipo_produto
-    }
-    EDITORA {
-        int id_editora PK
-        string nome_editora
-        string cidade
-    }
-    EVENTO {
-        int id_evento PK
-        string nome_evento
-        datetime data_evento
-        string tipo_evento
-        string descricao
-    }
-    DOACAO {
-        int id_doacao PK
-        string nome_doador
-        date data_doacao
-        int fk_livro FK
     }
     CLIENTE {
         int id_cliente PK
@@ -107,11 +64,80 @@ erDiagram
         int pontos_fidelidade
         date data_nascimento
     }
+    LIVRO {
+        int id_livro PK
+        string titulo
+        string autor
+        string condicao_livro
+        decimal preco_venda
+        int estoque_atual
+        int fk_genero FK
+        int fk_editora FK
+        string image_path
+    }
+    PRODUTO_CONSUMO {
+        int id_produto PK
+        string nome_alimento
+        decimal preco_unitario
+        string categoria_cardapio
+        boolean disponivel
+        int fk_fornecedor FK
+        string image_path
+    }
     INGREDIENTE {
         int id_ingrediente PK
         string nome_ingrediente
         double quantidade_atual
         string unidade_medida
+        int fk_fornecedor FK
+    }
+    VENDA_CONSOLIDADA {
+        int id_venda PK
+        datetime data_venda
+        decimal valor_total
+        string forma_pagamento
+        int numero_mesa
+        int fk_cliente FK
+    }
+    ITEM_VENDA_GERAL {
+        int id_item PK
+        int quantidade
+        decimal preco_applied
+        int fk_venda FK
+        int fk_livro FK
+        int fk_produto FK
+    }
+    DOACAO {
+        int id_doacao PK
+        string nome_doador
+        date data_doacao
+        int fk_livro FK
+    }
+    USUARIO {
+        int id_usuario PK
+        string username
+        string password
+        string role
+        date data_ultima_senha
+    }
+    EVENTO {
+        int id_evento PK
+        string nome_evento
+        datetime data_evento
+        string tipo_evento
+        string descricao
+    }
+    FICHA_TECNICA {
+        int id_ficha PK
+        int fk_produto FK
+        int fk_ingrediente FK
+        double quantidade_necessaria
+    }
+    PARTICIPACAO_EVENTO {
+        int id_participacao PK
+        int fk_evento FK
+        int fk_cliente FK
+        datetime data_inscricao
     }
 ```
 
