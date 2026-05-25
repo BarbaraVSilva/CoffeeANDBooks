@@ -131,17 +131,12 @@ style: |
 ### Adequação Completa aos Critérios de Avaliação Acadêmica
 
 Desenvolvido por **Thamires Martins e Barbara Silva**
-*(Integrantes do grupo: Barbara Silva, Thamires Martins, Jefferson Borges, Richard Greghi, Ricardo Pighin, Matheus Araujo)*
 
 ---
 
 ## 👥 Integrantes do Projeto
 *   **Barbara Silva**
 *   **Thamires Martins**
-*   **Jefferson Borges**
-*   **Richard Greghi**
-*   **Ricardo Pighin**
-*   **Matheus Araujo**
 
 ---
 
