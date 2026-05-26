@@ -40,7 +40,9 @@ public class ImportacaoDadosFrame extends JFrame {
         cbTabela = new JComboBox<>(new String[]{
             "📚 Livros (Acervo)", 
             "👥 Clientes (Fidelidade)", 
-            "☕ Comidas e Bebidas (Cardápio)"
+            "☕ Comidas e Bebidas (Cardápio)",
+            "📦 Insumos de Cafeteria (Estoque)",
+            "🏷️ Gêneros Literários (Categorias)"
         });
         cbTabela.setFont(new Font("SansSerif", Font.PLAIN, 14));
         selectionPanel.add(cbTabela);
@@ -90,17 +92,27 @@ public class ImportacaoDadosFrame extends JFrame {
             filename = "modelo_livros.csv";
             content = "titulo;autor;condicao;preco;estoque;id_genero\n" +
                       "Dom Quixote;Miguel de Cervantes;Novo;59.90;10;3\n" +
-                      "1984;George Orwell;Usado;29.90;5;1";
+                      "1984;George Orwell;Usado (Excelente);29.90;5;1";
         } else if (opt == 1) {
             filename = "modelo_clientes.csv";
             content = "nome;cpf;email;telefone;pontos;nascimento\n" +
-                      "Carlos Silva;111.222.333-44;carlos@email.com;(11) 98888-7777;10;25/08/1990\n" +
-                      "Ana Souza;555.665.777-88;ana@email.com;(11) 99999-8888;20;12/04/1995";
-        } else {
+                      "Carlos Henrique Souza;123.456.789-02;carlos.henrique@email.com;(11) 97654-3210;50;20/05/1988\n" +
+                      "Juliana Mendes Abreu;777.888.999-41;juliana.abreu@email.com;(11) 98888-9999;310;05/12/1985";
+        } else if (opt == 2) {
             filename = "modelo_cardapio.csv";
             content = "nome;preco;categoria;disponivel\n" +
                       "Café Expresso Triplo;8.50;Bebidas Quentes;1\n" +
                       "Cookie Suprema de Chocolate;6.90;Doces;1";
+        } else if (opt == 3) {
+            filename = "modelo_insumos.csv";
+            content = "nome;quantidade;unidade\n" +
+                      "Açúcar Refinado;5000.0;g\n" +
+                      "Leite Integral;10000.0;ml";
+        } else {
+            filename = "modelo_generos.csv";
+            content = "nome;estante\n" +
+                      "Ficção Científica;Estante A1 - Corredor Azul\n" +
+                      "Suspense & Thriller;Estante B2 - Próximo ao Café";
         }
 
         JFileChooser fc = new JFileChooser();
@@ -138,14 +150,24 @@ public class ImportacaoDadosFrame extends JFrame {
                             while ((line = br.readLine()) != null) {
                                 String[] cols = line.split(";");
                                 if (cols.length >= 6) {
-                                    stmt.setString(1, cols[0].trim());
-                                    stmt.setString(2, cols[1].trim());
-                                    stmt.setString(3, cols[2].trim());
-                                    stmt.setDouble(4, Double.parseDouble(cols[3].replace(",", ".").trim()));
-                                    stmt.setInt(5, Integer.parseInt(cols[4].trim()));
-                                    stmt.setInt(6, Integer.parseInt(cols[5].trim()));
+                                    String titulo = cols[0].trim();
+                                    String autor = cols[1].trim();
+                                    String condicao = cols[2].trim();
+                                    double preco = Double.parseDouble(cols[3].replace(",", ".").trim());
+                                    int estoque = Integer.parseInt(cols[4].trim());
+                                    int idGenero = Integer.parseInt(cols[5].trim());
+
+                                    // Validate price rules
+                                    model.Livro.validarPreco(condicao, preco);
+
+                                    stmt.setString(1, titulo);
+                                    stmt.setString(2, autor);
+                                    stmt.setString(3, condicao);
+                                    stmt.setDouble(4, preco);
+                                    stmt.setInt(5, estoque);
+                                    stmt.setInt(6, idGenero);
                                     stmt.executeUpdate();
-                                    log("✔ Livro importado: " + cols[0]);
+                                    log("✔ Livro importado: " + titulo);
                                     count++;
                                 }
                             }
@@ -157,22 +179,49 @@ public class ImportacaoDadosFrame extends JFrame {
                             while ((line = br.readLine()) != null) {
                                 String[] cols = line.split(";");
                                 if (cols.length >= 6) {
-                                    stmt.setString(1, cols[0].trim());
-                                    stmt.setString(2, cols[1].trim());
-                                    stmt.setString(3, cols[2].trim());
-                                    stmt.setString(4, cols[3].trim());
-                                    stmt.setInt(5, Integer.parseInt(cols[4].trim()));
-                                    
-                                    java.util.Date d = sdf.parse(cols[5].trim());
-                                    stmt.setDate(6, new java.sql.Date(d.getTime()));
+                                    String nome = cols[0].trim();
+                                    String cpf = cols[1].trim();
+                                    String email = cols[2].trim();
+                                    String telefone = cols[3].trim();
+                                    int pontos = Integer.parseInt(cols[4].trim());
+                                    String dataNascRaw = cols[5].trim();
+
+                                    // Validate CPF
+                                    if (!util.SecurityUtil.isValidCpf(cpf)) {
+                                        throw new Exception("CPF inválido para o cliente " + nome + ": " + cpf);
+                                    }
+                                    String formattedCpf = util.SecurityUtil.formatCpf(cpf);
+
+                                    // Validate Email if present
+                                    if (!email.isEmpty() && !util.SecurityUtil.isValidEmail(email)) {
+                                        throw new Exception("E-mail inválido para o cliente " + nome + ": " + email);
+                                    }
+
+                                    // Validate and format phone if present
+                                    if (!telefone.isEmpty()) {
+                                        if (!util.SecurityUtil.isValidPhone(telefone)) {
+                                            throw new Exception("Telefone inválido para o cliente " + nome + ": " + telefone);
+                                        }
+                                        telefone = util.SecurityUtil.formatPhone(telefone);
+                                    }
+
+                                    java.util.Date d = sdf.parse(dataNascRaw);
+                                    java.sql.Date sqlDate = new java.sql.Date(d.getTime());
+
+                                    stmt.setString(1, nome);
+                                    stmt.setString(2, formattedCpf);
+                                    stmt.setString(3, email);
+                                    stmt.setString(4, telefone);
+                                    stmt.setInt(5, pontos);
+                                    stmt.setDate(6, sqlDate);
                                     
                                     stmt.executeUpdate();
-                                    log("✔ Cliente importado: " + cols[0]);
+                                    log("✔ Cliente importado: " + nome);
                                     count++;
                                 }
                             }
                         }
-                    } else { // Products
+                    } else if (opt == 2) { // Products
                         String sql = "INSERT INTO PRODUTO_CONSUMO (nome_alimento, preco_unitario, categoria_cardapio, disponivel) VALUES (?, ?, ?, ?)";
                         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                             while ((line = br.readLine()) != null) {
@@ -184,6 +233,42 @@ public class ImportacaoDadosFrame extends JFrame {
                                     stmt.setBoolean(4, cols[3].trim().equals("1"));
                                     stmt.executeUpdate();
                                     log("✔ Item de Cardápio importado: " + cols[0]);
+                                    count++;
+                                }
+                            }
+                        }
+                    } else if (opt == 3) { // Insumos (Cafeteria Ingredients)
+                        String sql = "INSERT INTO INGREDIENTE (nome_ingrediente, quantidade_atual, unidade_medida) VALUES (?, ?, ?)";
+                        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                            while ((line = br.readLine()) != null) {
+                                String[] cols = line.split(";");
+                                if (cols.length >= 3) {
+                                    String nome = cols[0].trim();
+                                    double qtd = Double.parseDouble(cols[1].replace(",", ".").trim());
+                                    String unidade = cols[2].trim();
+
+                                    stmt.setString(1, nome);
+                                    stmt.setDouble(2, qtd);
+                                    stmt.setString(3, unidade);
+                                    stmt.executeUpdate();
+                                    log("✔ Insumo importado: " + nome);
+                                    count++;
+                                }
+                            }
+                        }
+                    } else if (opt == 4) { // Gêneros Literários
+                        String sql = "INSERT INTO GENERO_LIVRO (nome_genero, localizacao_estante) VALUES (?, ?)";
+                        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                            while ((line = br.readLine()) != null) {
+                                String[] cols = line.split(";");
+                                if (cols.length >= 2) {
+                                    String nome = cols[0].trim();
+                                    String estante = cols[1].trim();
+
+                                    stmt.setString(1, nome);
+                                    stmt.setString(2, estante);
+                                    stmt.executeUpdate();
+                                    log("✔ Gênero importado: " + nome);
                                     count++;
                                 }
                             }

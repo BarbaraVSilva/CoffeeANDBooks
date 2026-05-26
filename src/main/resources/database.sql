@@ -233,7 +233,14 @@ INSERT INTO USUARIO (username, password, role, data_ultima_senha) VALUES
 INSERT INTO EVENTO (nome_evento, data_evento, tipo_evento, descricao) VALUES 
 ('Clube do Livro: Ficção Científica', DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 5 DAY), 'TROCA_LIVROS', 'Discussão sobre o clássico ''Duna'' de Frank Herbert, com troca de livros entre os participantes e café cortesia.'),
 ('Workshop: Arte do Espresso e Latte Art', DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 12 DAY), 'WORKSHOP_CAFE', 'Aprenda a tirar o espresso perfeito e a criar desenhos incríveis com o leite vaporizado. Inclui degustação.'),
-('Noite de Poesia e Sarau', DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 20 DAY), 'OUTROS', 'Espaço aberto para leitura de poesias e apresentações acústicas no mezanino do Coffee&Books.');
+('Noite de Poesia e Sarau', DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 20 DAY), 'OUTROS', 'Espaço aberto para leitura de poesias e apresentações acústicas no mezanino do Coffee&Books.'),
+('Palestra: Realismo na Literatura Brasileira', DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 15 DAY), 'OUTROS', 'Um bate-papo descontraído sobre realismo na literatura brasileira com encenação teatral.'),
+('Oficina de Escrita Criativa: Mistérios de Poe', DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 8 DAY), 'OUTROS', 'Aprenda técnicas de suspense e mistério na prosa curta de ficção gótica de Edgar Allan Poe.'),
+('Lançamento: Sherlock & Watson', DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 4 DAY), 'OUTROS', 'Lançamento da nova edição de colecionador de ''O Cão dos Baskerville'' com sessão de autógrafos.'),
+('Banquete de Hogwarts: Doces e Literatura', DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 6 DAY), 'OUTROS', 'Degustação inspirada nas comidas do universo mágico de Harry Potter com trivia literária.'),
+('Encontro Tolkien: Terra Média e Mitologia', DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 10 DAY), 'OUTROS', 'Grupo de estudos sobre as línguas élficas e a construção de mundos de J.R.R. Tolkien.'),
+('Café Filosófico: A República de Platão', DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 22 DAY), 'OUTROS', 'Debate mediado sobre a alegoria da caverna e a busca pela verdade no mezanino.'),
+('Clube de Leitura: Virginia Woolf', DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 18 DAY), 'OUTROS', 'Análise e leitura compartilhada do livro ''Ao Farol'' com café coado e bolinhos.');
 
 -- Seed Data: PARTICIPACAO_EVENTO
 INSERT INTO PARTICIPACAO_EVENTO (fk_evento, fk_cliente) VALUES

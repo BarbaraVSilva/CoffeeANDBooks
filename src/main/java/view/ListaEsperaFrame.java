@@ -23,6 +23,32 @@ public class ListaEsperaFrame extends JFrame {
     // === COLLECTION: ArrayList armazena os dados em memória (sem banco de dados) ===
     private final ArrayList<Map<String, String>> listaEspera = new ArrayList<>();
 
+    {
+        // Seed 10 waitlist entries inspired by literature
+        adicionarEntradaEspera("Gabriel García Márquez", "11988887771", "4", "VIP / Reserva", "Jardim das Letras");
+        adicionarEntradaEspera("Julio Cortázar", "11988887772", "2", "Normal", "Balcão do Café");
+        adicionarEntradaEspera("Jorge Luis Borges", "11988887773", "1", "Preferencial (Idoso/PCD)", "Mezanino Cultural");
+        adicionarEntradaEspera("Ernest Hemingway", "11988887774", "5", "VIP / Reserva", "Salão Principal");
+        adicionarEntradaEspera("Oscar Wilde", "11988887775", "2", "Normal", "Jardim das Letras");
+        adicionarEntradaEspera("Mary Shelley", "11988887776", "3", "Normal", "Salão Principal");
+        adicionarEntradaEspera("Agatha Christie", "11988887777", "2", "Normal", "Mezanino Cultural");
+        adicionarEntradaEspera("Machado de Assis", "11988887778", "1", "Preferencial (Idoso/PCD)", "Balcão do Café");
+        adicionarEntradaEspera("Simone de Beauvoir", "11988887779", "6", "VIP / Reserva", "Jardim das Letras");
+        adicionarEntradaEspera("Arthur Conan Doyle", "11988887780", "2", "Normal", "Mezanino Cultural");
+    }
+
+    private void adicionarEntradaEspera(String nome, String tel, String pessoas, String prio, String amb) {
+        Map<String, String> entrada = new java.util.LinkedHashMap<>();
+        entrada.put("id", String.valueOf(contadorId++));
+        entrada.put("nome", nome);
+        entrada.put("telefone", tel);
+        entrada.put("pessoas", pessoas);
+        entrada.put("prioridade", prio);
+        entrada.put("ambiente", amb);
+        entrada.put("horario", java.time.LocalDateTime.now().minusMinutes((int)(Math.random() * 40)).format(FORMATTER));
+        listaEspera.add(entrada);
+    }
+
     // 5 campos de entrada de dados requisitados:
     private JTextField txtNome;           // 1. Nome
     private JTextField txtTelefone;       // 2. Telefone

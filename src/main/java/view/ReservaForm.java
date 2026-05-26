@@ -23,6 +23,14 @@ public class ReservaForm extends JFrame {
         // Mock data to start with some active reservations
         listaReservas.add(new Reserva("Amanda Costa", 3, "14:30", 2, true));
         listaReservas.add(new Reserva("Bernardo M.", 8, "16:00", 1, false));
+        listaReservas.add(new Reserva("Clarice Lispector", 12, "09:00", 4, true));
+        listaReservas.add(new Reserva("Guimarães Rosa", 15, "10:15", 3, false));
+        listaReservas.add(new Reserva("Jane Austen", 5, "11:30", 2, false));
+        listaReservas.add(new Reserva("Edgar Allan Poe", 13, "17:00", 1, true));
+        listaReservas.add(new Reserva("J.R.R. Tolkien", 2, "13:00", 5, false));
+        listaReservas.add(new Reserva("Virginia Woolf", 9, "15:45", 3, true));
+        listaReservas.add(new Reserva("George Orwell", 19, "08:30", 2, true));
+        listaReservas.add(new Reserva("Franz Kafka", 1, "14:00", 3, false));
     }
 
     public ReservaForm() {

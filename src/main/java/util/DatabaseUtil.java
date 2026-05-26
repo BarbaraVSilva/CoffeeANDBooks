@@ -225,37 +225,39 @@ public class DatabaseUtil {
                 }
             }
 
-            // Seed sample events if empty
+            // Seed sample events if fewer than 10
             try (java.sql.ResultSet rsEv = stmt.executeQuery("SELECT COUNT(*) FROM EVENTO")) {
-                if (rsEv.next() && rsEv.getInt(1) == 0) {
+                if (rsEv.next() && rsEv.getInt(1) < 10) {
+                    try {
+                        stmt.executeUpdate("DELETE FROM PARTICIPACAO_EVENTO");
+                        stmt.executeUpdate("DELETE FROM EVENTO");
+                    } catch (Exception ex) {
+                        System.err.println("Aviso ao limpar eventos antigos: " + ex.getMessage());
+                    }
+                    
                     String sqlEv = "INSERT INTO EVENTO (nome_evento, data_evento, tipo_evento, descricao) VALUES (?, ?, ?, ?)";
                     try (java.sql.PreparedStatement stmtEv = conn.prepareStatement(sqlEv)) {
-                        // Event 1
-                        stmtEv.setString(1, "Clube do Livro: Ficção Científica");
-                        java.util.Calendar cal = java.util.Calendar.getInstance();
-                        cal.add(java.util.Calendar.DAY_OF_YEAR, 5);
-                        stmtEv.setTimestamp(2, new java.sql.Timestamp(cal.getTimeInMillis()));
-                        stmtEv.setString(3, "TROCA_LIVROS");
-                        stmtEv.setString(4, "Discussão sobre o clássico 'Duna' de Frank Herbert, com troca de livros entre os participantes e café cortesia.");
-                        stmtEv.executeUpdate();
-                        
-                        // Event 2
-                        stmtEv.setString(1, "Workshop: Arte do Espresso e Latte Art");
-                        cal = java.util.Calendar.getInstance();
-                        cal.add(java.util.Calendar.DAY_OF_YEAR, 12);
-                        stmtEv.setTimestamp(2, new java.sql.Timestamp(cal.getTimeInMillis()));
-                        stmtEv.setString(3, "WORKSHOP_CAFE");
-                        stmtEv.setString(4, "Aprenda a tirar o espresso perfeito e a criar desenhos incríveis com o leite vaporizado. Inclui degustação.");
-                        stmtEv.executeUpdate();
-                        
-                        // Event 3
-                        stmtEv.setString(1, "Noite de Poesia e Sarau");
-                        cal = java.util.Calendar.getInstance();
-                        cal.add(java.util.Calendar.DAY_OF_YEAR, 20);
-                        stmtEv.setTimestamp(2, new java.sql.Timestamp(cal.getTimeInMillis()));
-                        stmtEv.setString(3, "OUTROS");
-                        stmtEv.setString(4, "Espaço aberto para leitura de poesias e apresentações acústicas no mezanino do Coffee&Books.");
-                        stmtEv.executeUpdate();
+                        String[][] listEv = {
+                            {"Clube do Livro: Ficção Científica", "5", "TROCA_LIVROS", "Discussão sobre o clássico 'Duna' de Frank Herbert, com troca de livros e café cortesia."},
+                            {"Workshop: Arte do Espresso e Latte Art", "12", "WORKSHOP_CAFE", "Aprenda a tirar o espresso perfeito e a criar desenhos incríveis com o leite vaporizado. Inclui degustação."},
+                            {"Noite de Poesia e Sarau", "20", "OUTROS", "Espaço aberto para leitura de poesias e apresentações acústicas no mezanino do Coffee&Books."},
+                            {"Palestra: Realismo na Literatura Brasileira", "15", "OUTROS", "Um bate-papo descontraído sobre realismo na literatura brasileira com encenação teatral."},
+                            {"Oficina de Escrita Criativa: Mistérios de Poe", "8", "OUTROS", "Aprenda técnicas de suspense e mistério na prosa curta de ficção gótica de Edgar Allan Poe."},
+                            {"Lançamento: Sherlock & Watson", "4", "OUTROS", "Lançamento da nova edição de colecionador de 'O Cão dos Baskerville' com sessão de autógrafos."},
+                            {"Banquete de Hogwarts: Doces e Literatura", "6", "OUTROS", "Degustação inspirada nas comidas do universo mágico de Harry Potter com trivia literária."},
+                            {"Encontro Tolkien: Terra Média e Mitologia", "10", "OUTROS", "Grupo de estudos sobre as línguas élficas e a construção de mundos de J.R.R. Tolkien."},
+                            {"Café Filosófico: A República de Platão", "22", "OUTROS", "Debate mediado sobre a alegoria da caverna e a busca pela verdade no mezanino."},
+                            {"Clube de Leitura: Virginia Woolf", "18", "OUTROS", "Análise e leitura compartilhada do livro 'Ao Farol' com café coado e bolinhos."}
+                        };
+                        for (String[] evData : listEv) {
+                            stmtEv.setString(1, evData[0]);
+                            java.util.Calendar cal = java.util.Calendar.getInstance();
+                            cal.add(java.util.Calendar.DAY_OF_YEAR, Integer.parseInt(evData[1]));
+                            stmtEv.setTimestamp(2, new java.sql.Timestamp(cal.getTimeInMillis()));
+                            stmtEv.setString(3, evData[2]);
+                            stmtEv.setString(4, evData[3]);
+                            stmtEv.executeUpdate();
+                        }
                     }
                 }
             }
